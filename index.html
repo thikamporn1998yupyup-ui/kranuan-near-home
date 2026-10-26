@@ -20,10 +20,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
 /* อนิเมชั่นการเปลี่ยนหน้า */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
-main { animation: fadeIn 0.3s ease-out; }
+main { animation: fadeIn 0.25s ease-out; }
 
 .top{background:#f9d35b;padding:20px 22px;border-radius:0 0 30px 30px;transition:all 0.3s ease}
 .brandline{display:flex;align-items:center;justify-content:space-between}
@@ -75,13 +75,12 @@ p{line-height:1.7}
 .shop button:hover{background:#c84c23}
 .shop button{width:100%}
 
-/* ปรับปรุงหน้าตลาด: แสดงผลเรียงแถวละ 3 และสัดส่วน 3:4 ไม่ใช้อิโมจิในปุ่ม */
+/* ตลาด: 3 คอลัมน์ สัดส่วน 3:4 ปุ่มโมเดิร์น */
 .market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .market-card{display:flex;flex-direction:column;background:white;border:1px solid #eee2d3;border-radius:14px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.02);aspect-ratio:3/4;position:relative}
 .poster-info{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid #f7f1e5;background:#fffdfa}
 .poster-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover;background:#e95d2f;color:white;display:grid;place-items:center;font-size:9px;font-weight:bold}
 .poster-name{font-size:10px;font-weight:bold;color:#554838;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.poster-time{display:none}
 
 .market-cover{height:90px;background:#e7eadb;position:relative;display:grid;place-items:center}
 .market-cover>svg{width:80px;height:70px}
@@ -91,7 +90,6 @@ p{line-height:1.7}
 .market-body p{font-size:10px;color:#8a7b6b;margin:0;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 .market-price{font-size:13px;color:#d8592f;font-weight:bold;margin:2px 0}
 
-/* ปุ่มดีไซน์ทันสมัย ไม่มีอีโมจิ */
 .modern-btn{border:0;border-radius:8px;background:#e95d2f;color:white;padding:7px 10px;font-size:10px;font-weight:bold;width:100%;margin-top:4px;cursor:pointer;text-align:center}
 .modern-btn.secondary{background:#f4ecd9;color:#554838}
 .modern-btn:hover{opacity:0.9}
@@ -191,7 +189,6 @@ p{line-height:1.7}
 <script src="assets/delivery-pricing.js"></script>
 <script>
 const areaId='khon-kaen-kranuan',key='kranuan-isolated-demo-v1';
-
 const LINE_LIFF_ID = '2012226697-VvcpgtpW'; 
 
 let state={orders:[],rider:'none',news:false,currentUser:null};
@@ -305,19 +302,6 @@ function advance(id,next){
   o.status=next;save();
 }
 
-function render(){
-  document.getElementById('nav').innerHTML=['ร้านค้า','ข่าว','ออเดอร์ของฉัน','ร้านรับงาน','ส่งของ','ผู้ดูแล'].map(x=>'<button onclick="view=&quot;'+x+'&quot;;render()">'+x+'</button>').join('');
-  let h='<h2>'+view+'</h2>';
-  if(view==='ร้านค้า')h+='<div class="row"><input id="search" aria-label="ค้นหาร้าน" placeholder="ค้นหาร้านหรือบริการ"><select id="category" aria-label="หมวดหมู่"><option>ทั้งหมด</option><option>อาหาร</option><option>บริการ</option></select></div><div id="results"></div>';
-  if(view==='ข่าว')h+=state.news?'<article class="card"><span class="badge">ข่าวสมมติ</span><h3>กิจกรรมชุมชนตัวอย่าง</h3><p>ข้อความทดสอบ ไม่ใช่ประกาศจริง</p><p class="muted">แหล่งที่มา: ข้อมูลจำลอง ไม่มีแหล่งข่าวจริง<br>อนุมัติในการสาธิตแล้ว ไม่มีวันจัดกิจกรรมจริง</p></article>':'<p class="card">ยังไม่มีข่าวที่อนุมัติ ลองอนุมัติข่าวตัวอย่างในหน้าผู้ดูแล</p>';
-  if(['ออเดอร์ของฉัน','ร้านรับงาน'].includes(view))h+=orders();
-  if(view==='ส่งของ')h+=deliveryFormHtml();
-  if(view==='ผู้ดูแล')h+='<p class="muted">หน้าจำลอง ไม่มีการตรวจสิทธิ์จริง</p><div class="card"><h3>กิจกรรมชุมชนตัวอย่าง</h3><p>แหล่งที่มา: ข้อมูลจำลอง ไม่มีแหล่งข่าวจริง</p><button onclick="approveNews()">'+(state.news?'อนุมัติข่าวแล้ว':'อนุมัติข่าวตัวอย่าง')+'</button></div><div class="card"><h3>ผู้สมัครไรเดอร์สมมติ</h3><p>พื้นที่กระนวน • '+state.rider+'</p><button onclick="approveRider()">อนุมัติไรเดอร์ที่สมัครแล้ว</button></div>';
-  document.getElementById('app').innerHTML=h;
-  if(view==='ร้านค้า'){let q=document.getElementById('search'),c=document.getElementById('category');q.value=query;c.value=category;q.oninput=()=>{query=q.value;results()};c.onchange=()=>{category=c.value;results()};results()}
-}
-
-/* หน้าส่งของจริงภายในแอป (ตรวจสอบของในกล่องและรายละเอียด) */
 function deliveryFormHtml(){
   return '<div class="card">'+
     '<h3>ส่งของด่วนในกระนวน</h3>'+
@@ -348,7 +332,9 @@ function submitRealDelivery(e){
 }
 
 function results(){
-  document.getElementById('results').innerHTML=sample.filter(s=>s.name.includes(query)&&(category==='ทั้งหมด'||s.category===category)).map(s=>'<article class="card"><span class="badge">'+s.category+' • สมมติ</span><h3>'+s.name+'</h3><p>ช่องทางติดต่อ: ยังไม่มีข้อมูลจริง</p>'+(s.category==='อาหาร'?'<p>ข้าวกล่อง 50 + ค่าส่ง 10 = 60 บาท (สมมติ)</p><button onclick="createOrder()">สั่งข้าวกล่องทันที (ใช้พิกัด GPS ของคุณ)</button>':'<p>ตัวอย่างบริการซ่อมในชุมชน ยังไม่เปิดเดลิเวอรี่</p>')+'</article>').join('')||'<p>ไม่พบร้าน</p>'
+  const resEl = document.getElementById('results');
+  if(!resEl) return;
+  resEl.innerHTML = sample.filter(s=>s.name.includes(query)&&(category==='ทั้งหมด'||s.category===category)).map(s=>'<article class="shop"><div class="cover"><span class="sampletag">'+s.category+' • สมมติ</span>'+objectArt('food')+'</div><div class="shopbody"><h3>'+s.name+'</h3><p>ช่องทางติดต่อ: ยังไม่มีข้อมูลจริง</p>'+(s.category==='อาหาร'?'<p class="price">60 บาท (รวมส่ง)</p><button onclick="createOrder()">สั่งข้าวกล่องทันที</button>':'<p class="muted">บริการซ่อมในชุมชน</p>')+'</div></article>').join('')||'<p class="empty">ไม่พบร้าน</p>';
 }
 
 function createOrder(){
@@ -404,4 +390,168 @@ const paths={
   drink:'<path d="M7 8h11l-2 13H9L7 8Zm5 0 2-5h5M7 12h10M9 2v2"/>',
   service:'<path d="M14 6a5 5 0 0 0-7 6L3 17a3 3 0 0 0 4 4l6-6a5 5 0 0 0 6-7l-4 4-3-3 4-4"/>',
   market:'<path d="M3 4h9l9 9-9 9-9-9V4Z"/><circle cx="8" cy="9" r="1.5"/><path d="m13 12 4 4m-7-1 4 4"/>',
-  rider:'<circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M5 18h7l-3-8H5m4
+  rider:'<circle cx="5" cy="18" r="3"/><circle cx="19" cy="18" r="3"/><path d="M5 18h7l-3-8H5m4 0h7l3 8M15 4h3l2 7M3 7h7M4 3h5"/>',
+  news:'<path d="M5 3h14v18H5V3Zm3 4h8M8 16h8M8 12h3"/><path d="M14 10h2v3h-2z"/>',
+  orders:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v5H9zM9 12h6M9 16h6"/>',
+  search:'<circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/>',
+  pin:'<path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/>'
+};
+
+function icon(k){return '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">'+paths[k]+'</svg>'}
+
+function go(v){
+  if(v==='ส่งของ'){view='ส่งของ'; render(); window.scrollTo({top:0,behavior:'smooth'}); return;}
+  if(v==='ร้านค้า')category='ทั้งหมด';
+  view=v; render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function setCategory(c){
+  if(c==='ตลาด'){view='ตลาด'}
+  else{category=c;view='ร้านค้า'}
+  render();
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function topNav(){
+  const navEl = document.getElementById('nav');
+  if(!navEl) return;
+  navEl.innerHTML=[['ร้านค้า','home','หน้าแรก'],['ตลาด','market','ตลาด'],['ออเดอร์ของฉัน','orders','งานของฉัน'],['ส่งของ','rider','ส่งของ'],['ข่าว','news','ข่าวชุมชน']].map(([v,k,l])=>'<button class="'+(view===v?'active':'')+'" data-view="'+v+'" onclick="go(this.dataset.view)">'+icon(k)+l+'</button>').join('');
+  const locEl = document.getElementById('location');
+  if(locEl) locEl.innerHTML=icon('pin')+'อ.กระนวน จ.ขอนแก่น';
+  const searchIconEl = document.getElementById('searchIcon');
+  if(searchIconEl) searchIconEl.innerHTML=icon('search');
+  const q=document.getElementById('search');
+  if(q){
+    q.value=query;
+    q.oninput=()=>{query=q.value;if(!['ร้านค้า','ตลาด'].includes(view)){view='ร้านค้า';render()}else if(view==='ร้านค้า')results();else marketResults()};
+  }
+  
+  const hero = document.getElementById('topHeroSection');
+  if(hero){
+    if(view === 'ร้านค้า'){
+      hero.style.display = 'block';
+      hero.style.opacity = '1';
+      hero.style.maxHeight = '200px';
+    } else {
+      hero.style.display = 'none';
+    }
+  }
+}
+
+state.listings=Array.isArray(state.listings)?state.listings:[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คนในชุมชน',avatar:''}}];
+
+function render(){
+  const appEl = document.getElementById('app');
+  if(!appEl) return;
+  
+  if(!['ร้านค้า','ตลาด','ส่งของ','ออเดอร์ของฉัน','ร้านรับงาน','ข่าว','ผู้ดูแล'].includes(view)){
+    view='ร้านค้า';
+  }
+
+  let h=categoryBar();
+  if(view==='ร้านค้า'){
+    h+='<section class="ad" aria-label="พื้นที่แบนเนอร์โฆษณาตัวอย่าง" style="background:#e95c2c;border-radius:22px;color:white;margin-top:20px;padding:20px;display:flex;position:relative;overflow:hidden"><div style="width:65%;z-index:1"><small style="font-size:9px;letter-spacing:1.2px;color:#ffdfc9">LOCAL SPOTLIGHT</small><h2 style="font-size:22px;margin:8px 0">ร้านใกล้บ้าน<br>ให้เราได้รู้จักกัน</h2><p style="font-size:11px;color:#ffe8d5">พื้นที่แนะนำร้านค้าในกระนวน</p><button onclick="adInfo()" style="border:0;color:#93401f;background:#ffe5b0;border-radius:20px;padding:7px 12px;font-size:11px;margin-top:8px;font-weight:bold">ดูรายละเอียด</button></div>'+foodArt()+'</section><div class="sectionhead"><h2>ร้านน่าแวะใกล้คุณ</h2><button class="textbtn" onclick="category=\'ทั้งหมด\';query=\'\';render()">ดูทั้งหมด</button></div><div id="results" class="shopgrid"></div><div class="newsrow">'+icon('news')+'<div><h3>ข่าว ประกาศ และกิจกรรม</h3><p>ตรวจสอบแหล่งที่มา ก่อนส่งต่อเรื่องราวดี ๆ</p></div></div>'
+  } else if(view==='ตลาด'){
+    h+='<div class="sectionhead"><h2>ตลาดของคนกระนวน</h2><button class="modern-btn" style="width:auto;padding:8px 14px;" onclick="listingForm()">ลงประกาศขาย</button></div><p class="resultnote" style="font-size:11px;color:#8a7b6b;margin-bottom:12px;">ของใหม่หรือมือสอง ลงขายกันเองในชุมชน</p><div id="marketForm"></div><div id="marketResults" class="market-grid"></div>';
+  } else if(view==='ส่งของ'){
+    h+=deliveryFormHtml();
+  } else if(view==='ออเดอร์ของฉัน' || view==='ร้านรับงาน'){
+    h+='<h2>'+view+'</h2>'+orders();
+  } else if(view==='ข่าว'){
+    h+='<h2>ข่าวสาร</h2>'+(state.news?'<article class="card"><span class="badge">ข่าวสมมติ</span><h3>กิจกรรมชุมชนตัวอย่าง</h3><p>ข้อความทดสอบ ไม่ใช่ประกาศจริง</p></article>':'<p class="card">ยังไม่มีข่าวที่อนุมัติ</p>');
+  } else if(view==='ผู้ดูแล'){
+    h+='<h2>ผู้ดูแล</h2><div class="card"><h3>จัดการข่าว</h3><button onclick="approveNews()">อนุมัติข่าวตัวอย่าง</button></div>'+pendingListings();
+  }
+
+  appEl.innerHTML=h;
+  topNav();
+  if(view==='ร้านค้า')results();
+  if(view==='ตลาด')marketResults()
+}
+
+function categoryBar(){
+  return '<div class="categories">'+[['อาหาร','food'],['เครื่องดื่ม','drink'],['บริการ','service'],['ตลาด','market'],['ส่งของ','rider']].map(([label,k])=>{
+    const selected = label==='ตลาด' ? view==='ตลาด' : (label==='ส่งของ' ? view==='ส่งของ' : (view==='ร้านค้า' && category===label));
+    return '<button class="category '+(selected?'selected':'')+'" onclick="chooseCategory(this.dataset.category)" data-category="'+label+'"><span>'+icon(k)+'</span>'+label+'</button>';
+  }).join('')+'</div>'
+}
+function chooseCategory(c){if(c==='ส่งของ'){go('ส่งของ');return}setCategory(c)}
+
+function foodArt(){return '<svg viewBox="0 0 180 140" style="position:absolute;right:-12px;bottom:-15px;width:160px;height:140px" aria-hidden="true"><ellipse cx="90" cy="115" rx="68" ry="12" fill="#482d1d" opacity=".1"/><ellipse cx="90" cy="90" rx="68" ry="32" fill="#fffdf0"/><ellipse cx="90" cy="85" rx="54" ry="24" fill="#e9d2a0"/><path d="M45 86q5-55 55-40 27 12 25 40" fill="#fff5d8"/><path d="m73 68 26-19 32 17-22 27-27-2Z" fill="#b96531"/></svg>'}
+
+function objectArt(type){
+  return '<svg viewBox="0 0 180 140" aria-hidden="true"><ellipse cx="90" cy="115" rx="56" ry="9" fill="#724e2d" opacity=".1"/>'+(type==='market'?'<path d="M49 51h82v56H49z" fill="#c88d50"/><path d="m49 51 41-22 41 22-41 22Z" fill="#e7b77a"/><path d="M90 73v34" stroke="#aa713c" stroke-width="3"/>':'<circle cx="90" cy="72" r="43" fill="#f6d49e"/>')+'</svg>'
+}
+
+function adInfo(){document.getElementById('notice').textContent='พื้นที่โฆษณาตัวอย่าง ยังไม่มีผู้ลงโฆษณา';window.scrollTo({top:0,behavior:'smooth'})}
+
+function marketResults(){
+  const mrEl = document.getElementById('marketResults');
+  if(!mrEl) return;
+  mrEl.innerHTML=state.listings.filter(l=>l.areaId===areaId&&l.status==='approved'&&l.title.includes(query)).map(l=>{
+    const posterName = l.poster ? l.poster.name : (state.currentUser ? state.currentUser.name : 'คนในชุมชน');
+    const posterAvatar = l.poster ? l.poster.avatar : (state.currentUser ? state.currentUser.avatar : '');
+    const avatarHtml = posterAvatar ? '<img class="poster-avatar" src="'+escapeHtml(posterAvatar)+'" alt="'+escapeHtml(posterName)+'">' : '<div class="poster-avatar">'+escapeHtml(String(posterName).charAt(0))+'</div>';
+    
+    return '<article class="market-card">'+
+           '<div class="poster-info">'+avatarHtml+'<div class="poster-name">'+escapeHtml(posterName)+'</div></div>'+
+           '<div class="market-cover" style="background:#e7eadb"><span class="sampletag">ชุมชน</span>'+objectArt('market')+'</div>'+
+           '<div class="market-body"><div><p>'+escapeHtml(l.condition)+'</p><h3>'+escapeHtml(l.title)+'</h3><span class="market-price">'+Number(l.price).toLocaleString('th-TH')+' ฿</span></div>'+
+           '<div><button class="modern-btn secondary" onclick="sellerContact()">ติดต่อผู้ขาย</button>'+
+           '<button class="modern-btn" data-id="'+escapeHtml(l.id)+'" onclick="requestMarketDelivery(this.dataset.id)">ส่งของชิ้นนี้</button></div></div></article>';
+  }).join('')||'<p class="empty">ยังไม่มีประกาศในตลาดตอนนี้</p>';
+}
+
+function sellerContact(){document.getElementById('notice').textContent='ติดต่อผู้ขายผ่านระบบแชทชุมชน';}
+
+function listingForm(){
+  document.getElementById('marketForm').innerHTML='<form class="card" id="listingForm"><h3>ลงประกาศขายในชุมชน</h3><p class="muted">ประกาศของคุณจะแสดงพร้อมโปรไฟล์ผู้ลงประกาศ</p><label>ชื่อสินค้า<input name="title" maxlength="80" required></label><label>ราคา (บาท)<input name="price" type="number" min="1" max="1000000" required></label><label>สภาพสินค้า<select name="condition"><option>ของใหม่</option><option>มือสอง สภาพดี</option></select></label><label>รายละเอียด<input name="detail" maxlength="240" required></label><button type="submit" class="modern-btn" style="margin-top:12px;padding:10px">ส่งให้ผู้ดูแลตรวจ</button></form>';
+  document.getElementById('listingForm').onsubmit=e=>{
+    e.preventDefault();
+    const data=new FormData(e.target);
+    const posterInfo = state.currentUser ? {name: state.currentUser.name, avatar: state.currentUser.avatar} : {name: 'สมาชิกกระนวน', avatar: ''};
+    state.listings.push({
+      id:'L'+Date.now(), areaId,
+      title:String(data.get('title')).trim(),
+      price:Number(data.get('price')),
+      condition:String(data.get('condition')),
+      detail:String(data.get('detail')).trim(),
+      status:'pending', isSample:true,
+      poster: posterInfo
+    });
+    save(); document.getElementById('notice').textContent='ส่งประกาศแล้ว รอผู้ดูแลอนุมัติ';
+    document.getElementById('marketForm').innerHTML='';
+  }
+}
+
+function pendingListings(){
+  return '<h2 style="margin-top:24px">ประกาศตลาดรอตรวจ</h2>'+state.listings.filter(l=>l.areaId===areaId&&l.status==='pending').map(l=>'<div class="card"><h3>'+escapeHtml(l.title)+'</h3><p>'+escapeHtml(l.detail)+' · '+Number(l.price)+' บาท</p><button data-id="'+escapeHtml(l.id)+'" onclick="reviewListing(this.dataset.id, true)">อนุมัติประกาศ</button> <button data-id="'+escapeHtml(l.id)+'" onclick="reviewListing(this.dataset.id, false)">ไม่อนุมัติ</button></div>').join('')
+}
+
+function reviewListing(id,approve){
+  const l=state.listings.find(l=>l.id===id&&l.areaId===areaId&&l.status==='pending');
+  if(l){l.status=approve?'approved':'rejected';save()}
+}
+
+statuses.seller='รอผู้ขายยืนยันพร้อมส่ง';
+
+function requestMarketDelivery(id){
+  const l=state.listings.find(l=>l.id===id&&l.areaId===areaId&&l.status==='approved');
+  if(!l)return;
+  state.orders.push({
+    id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),
+    areaId, status:'seller', type:'market', item:l.title, itemPrice:l.price, deliveryFee:20,
+    coordinates: { pickup: { lat: 16.706, lng: 103.078 }, drop: userLiveLocation, isSample: false }
+  });
+  go('ออเดอร์ของฉัน'); save();
+  document.getElementById('notice').textContent='สร้างคำขอให้ไรเดอร์รับของจากตลาดเรียบร้อย';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initLineSDK();
+  render();
+});
+</script>
+</body>
+</html>
