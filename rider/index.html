@@ -15,9 +15,9 @@
 body{margin:0;background:#18191c;color:#f0f2f5;font:400 14px/1.6 Seed,sans-serif}
 button,input,select{font:inherit}
 button{cursor:pointer}
-.app{max-width:480px;background:#1e2024;min-height:100vh;margin:auto;padding-bottom:85px;position:relative}
+.app{max-width:480px;background:#1e2024;min-height:100vh;margin:auto;padding-bottom:90px;position:relative}
 
-/* แถบบนสุด: จัดระเบียบใหม่ ชื่อซ้าย รูปไรเดอร์วงกลมเล็กอยู่ขวา พร้อมสถานะ */
+/* Topbar: จัดระเบียบใหม่ ชื่อซ้าย รูปวงกลมเล็กและสถานะอยู่ขวา */
 .topbar{padding:12px 16px;background:#25282e;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #32363e}
 .topbar-info strong{font-size:16px;display:block;color:#fff}
 .topbar-info small{display:block;color:#9da4b0;font-size:10px;letter-spacing:.5px}
@@ -30,8 +30,8 @@ button{cursor:pointer}
 .online-status i{width:6px;height:6px;border-radius:50%;background:#8a94a2}
 .online-status i.on{background:#00e676;box-shadow:0 0 6px #00e676}
 
-/* ส่วนแสดงผลแผนที่ Leaflet จริง (Dark Mode สวยงาม ไม่ติด API Key) */
-#realMapContainer{height:300px;width:100%;position:relative;background:#111214;border-bottom:1px solid #32363e}
+/* ส่วนแสดงผลแผนที่ Leaflet จริง (Dark Mode) */
+#realMapContainer{height:260px;width:100%;position:relative;background:#111214;border-bottom:1px solid #32363e}
 #realMap{height:100%;width:100%}
 
 .maplabel{position:absolute;left:12px;top:12px;background:rgba(24, 25, 28, 0.85);backdrop-filter:blur(6px);padding:5px 10px;border-radius:6px;font-size:11px;color:#f0f2f5;z-index:1000;border:1px solid #32363e;font-weight:bold}
@@ -64,9 +64,12 @@ label{display:block;font-size:12px;margin:10px 0;color:#e1e4e8}
 input,select{width:100%;padding:10px;border:1px solid #3a3f47;border-radius:10px;background:#18191c;color:#fff;font-size:13px}
 .pricegrid{display:grid;grid-template-columns:1fr auto;gap:7px;font-size:12px;color:#d1d5db}.pricegrid .total{border-top:1px solid #3a3f47;padding-top:9px;font-weight:700;font-size:17px;color:#ff5252}
 .note{font-size:11px;background:#332a18;color:#ffd54f;padding:11px;border-radius:10px;line-height:1.7;border:1px solid #544322}
+
+/* Navbar เมนูด้านล่างแบบดั้งเดิมที่ถูกต้องตามระบบ */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,480px);display:flex;background:#25282e;border-top:1px solid #32363e;padding:10px 10px 14px;z-index:1000}
-.nav button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;color:#8a94a2;font-size:10px}
+.nav button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;color:#8a94a2;font-size:10px;cursor:pointer}
 .nav button.active{color:#ef6264;font-weight:bold}
+
 h2{font-size:16px;margin:4px 0 14px;color:#fff}
 details summary{cursor:pointer;font-size:12px;color:#8a94a2}
 #notice:empty{display:none}#notice{font-size:12px;padding:12px;background:#332a18;color:#ffd54f;border-radius:10px;margin-bottom:10px}
@@ -86,7 +89,7 @@ a{color:#ef6264}
 .dash-stats strong{display:block;font-size:22px;color:#ef6264}.dash-stats span{font-size:10px;color:#8a94a2}
 .linkbutton{border:0;background:none;color:#ef6264;font-size:12px}
 
-/* ซ่อนแผนที่ SVG สมมติเดิม */
+/* ซ่อนแผนที่ SVG เดิม */
 .map { display: none !important; }
 </style>
 </head>
@@ -108,7 +111,7 @@ a{color:#ef6264}
     </div>
   </header>
 
-  <!-- Container แผนที่จริงแบบ OpenStreetMap Dark Mode (ฟรี ไม่ใช้ API Key) -->
+  <!-- Container แผนที่ถนนจริง -->
   <div id="realMapContainer">
     <div id="realMap"></div>
     <div class="maplabel">📍 GPS ติดตามตำแหน่งจริง</div>
@@ -118,17 +121,13 @@ a{color:#ef6264}
     </div>
   </div>
 
-  <!-- Content -->
+  <!-- Content พื้นที่แสดงผลข้อมูลจาก rider.js -->
   <main class="content">
     <div id="notice" role="status"></div>
     <div id="screen"></div>
-    <details class="card">
-      <summary>ข้อมูลระบบแผนที่จริง</summary>
-      <p class="muted">ระบบดึงแผนที่ถนนจริงจาก OpenStreetMap พร้อมแสดงพิกัด GPS จริงของไรเดอร์</p>
-      <a href="../index.html">กลับแอพชุมชน</a>
-    </details>
   </main>
   
+  <!-- Navbar เมนูด้านล่างควบคุมโดย rider.js -->
   <nav class="nav" id="nav"></nav>
 </div>
 
@@ -154,7 +153,6 @@ a{color:#ef6264}
       attributionControl: false
     }).setView([defaultLat, defaultLng], 15);
 
-    // ใช้ OpenStreetMap พร้อมฟิลเตอร์ Dark Mode (โหลดฟรี ไม่มีวันหมดอายุ ไม่ติด API Key)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       className: 'dark-map-tiles'
@@ -199,7 +197,6 @@ a{color:#ef6264}
     }
   }
 
-  // ซิงค์สถานะออนไลน์บนขวาให้ตรงกับระบบเดิม
   function updateTopbarStatus() {
     const isOnline = typeof online !== 'undefined' && online;
     const dot = document.getElementById('statusDot');
@@ -225,7 +222,6 @@ a{color:#ef6264}
 </script>
 
 <style>
-  /* แปลงสีแผนที่ OpenStreetMap ให้เป็น Dark Mode เท่ๆ สบายตา */
   .dark-map-tiles {
     filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
   }
