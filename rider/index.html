@@ -100,6 +100,10 @@ textarea{width:100%;padding:10px;border:1px solid #3a3f47;border-radius:10px;bac
 .alertbar{height:3px;border-radius:2px;background:rgba(var(--rgb),.25);margin-top:14px;overflow:hidden}.alertbar i{display:block;height:100%;background:var(--ac);animation:cd 30s linear forwards}
 @keyframes drop{from{transform:translateY(-130%);opacity:0}}@keyframes cd{from{width:100%}to{width:0}}
 @media(prefers-reduced-motion:reduce){.alertcard,.alertbar i{animation:none}}
+#jobbar{position:fixed;left:50%;transform:translateX(-50%);bottom:74px;width:min(calc(100% - 16px),464px);z-index:1500}#jobbar:empty{display:none}
+.barcard{background:var(--s1);border:1px solid rgba(var(--rgb),.5);border-radius:18px;padding:12px;box-shadow:0 -6px 24px rgba(0,0,0,.45)}
+.barinfo{flex:1;min-width:0}.barinfo strong,.barinfo span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hasbar .app{padding-bottom:230px}
 @media(min-width:650px){.app{margin:20px auto;border-radius:27px;overflow:hidden}}
 </style>
 </head>
@@ -141,6 +145,7 @@ textarea{width:100%;padding:10px;border:1px solid #3a3f47;border-radius:10px;bac
     <div id="screen"></div>
   </main>
   <nav class="nav" id="nav"></nav>
+  <div id="jobbar"></div>
   <div id="alert" role="alertdialog" aria-live="assertive"></div>
 </div>
 
@@ -228,16 +233,18 @@ const pending=()=>jobs.filter(j=>j.status==='pending');
 const done=()=>mine().filter(j=>j.status==='delivered').sort((a,b)=>String(b.delivered_at).localeCompare(String(a.delivered_at)));
 const isToday=s=>s&&new Date(s).toDateString()===new Date().toDateString();
 const sum=l=>l.reduce((s,j)=>s+Number(j.fee||0),0);
-const mapUrl=t=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t+' กระนวน ขอนแก่น');
+const mapUrl=(t,la,ln)=>'https://www.google.com/maps/dir/?api=1&dir_action=navigate&travelmode=two-wheeler&destination='+encodeURIComponent(la!=null&&la!==''&&ln!=null&&ln!==''?la+','+ln:t+' กระนวน ขอนแก่น');
+const dest=j=>j.status==='picked'?[j.dropoff,j.dropoff_lat,j.dropoff_lng,'นำทางไปส่ง']:[j.pickup,j.pickup_lat,j.pickup_lng,'นำทางไปร้าน'];
+const navBtn=j=>{const d=dest(j);return `<a class="secondary" target="_blank" rel="noopener" href="${mapUrl(d[0],d[1],d[2])}"><svg class="ic" style="width:16px;height:16px"><use href="#i-nav"/></svg>${d[3]}</a>`};
 const STATUS={pending:'รอรับงาน',accepted:'รับงานแล้ว',picked:'รับของแล้ว',delivered:'ส่งสำเร็จ'};
 
 /* ============ หน้าจอ ============ */
 function jobCard(j,withAct){
   let act='';
   if(withAct){
-    if(j.status==='pending')act=`<button class="primary full" data-act="accept" data-id="${esc(j.id)}">รับงานนี้</button>`;
-    if(j.status==='accepted')act=`<div class="row"><a class="secondary" target="_blank" rel="noopener" href="${mapUrl(j.pickup)}"><svg class="ic" style="width:16px;height:16px"><use href="#i-nav"/></svg>นำทางไปร้าน</a><button class="primary" data-act="picked" data-id="${esc(j.id)}">รับของแล้ว</button></div>`;
-    if(j.status==='picked')act=`<div class="row"><a class="secondary" target="_blank" rel="noopener" href="${mapUrl(j.dropoff)}"><svg class="ic" style="width:16px;height:16px"><use href="#i-nav"/></svg>นำทางไปส่ง</a><button class="primary" data-act="delivered" data-id="${esc(j.id)}">ส่งสำเร็จ</button></div>`;
+    if(j.status==='pending')act=`<div class="row">${navBtn(j)}<button class="primary" data-act="accept" data-id="${esc(j.id)}">รับงานนี้</button></div>`;
+    if(j.status==='accepted')act=`<div class="row">${navBtn(j)}<button class="primary" data-act="picked" data-id="${esc(j.id)}">รับของแล้ว</button></div>`;
+    if(j.status==='picked')act=`<div class="row">${navBtn(j)}<button class="primary" data-act="delivered" data-id="${esc(j.id)}">ส่งสำเร็จ</button></div>`;
   }
   return `<div class="card"><div class="jobhead"><div class="avatar"><svg class="ic"><use href="#i-scooter"/></svg></div><div><strong>${esc(j.shop)}</strong><span class="muted">${esc(STATUS[j.status]||j.status)} · ${esc(j.distance_km)} กม.</span></div><div class="amount">${baht(j.fee)}</div></div>
   <div class="timeline"><div class="stop">${esc(j.pickup)}<small>จุดรับของ</small></div><div class="stop">${esc(j.dropoff)}<small>จุดส่งของ</small></div></div>${act}</div>`;
@@ -247,13 +254,13 @@ function homeView(){
   return `<div class="sectiontitle"><h1>แดชบอร์ด</h1><span class="pill">${isLocal()?'โหมดทดลอง':'เชื่อมฐานข้อมูลแล้ว'}</span></div>
   <div class="switch"><span>สถานะรับงาน</span><button class="${online?'':'off'}" data-act="toggle"><i class="dot"></i>${online?'ออนไลน์ แตะเพื่อปิด':'ออฟไลน์ แตะเพื่อเปิด'}</button></div>
   <div class="dash-stats"><button data-go="jobs"><strong>${p.length}</strong><span>งานรอรับ</span></button><button data-go="jobs"><strong>${a?1:0}</strong><span>กำลังส่ง</span></button><button data-go="history"><strong>${t.length}</strong><span>ส่งแล้ววันนี้</span></button></div>
-  ${a?jobCard(a,true):'<div class="empty">ยังไม่มีงานที่กำลังทำ ไปที่แท็บงานเพื่อรับงานใหม่</div>'}`;
+  <h2 style="font-size:15px;margin:4px 0 0">งานรอรับ (${p.length})</h2>${p.length?p.slice(0,3).map(j=>jobCard(j,true)).join('')+(p.length>3?'<button class="secondary full" data-go="jobs">ดูงานรอรับทั้งหมด</button>':''):'<div class="empty">ยังไม่มีงานรอรับ ระบบจะแจ้งเตือนเมื่อมีงานใหม่</div>'}`;
 }
 function jobsView(){
   const a=active(),p=pending();
   return `<div class="sectiontitle"><h1>งาน</h1><button class="secondary" data-act="refresh"><svg class="ic" style="width:16px;height:16px"><use href="#i-refresh"/></svg>รีเฟรช</button></div>
   ${online?'':'<div class="state">คุณออฟไลน์อยู่ เปิดสถานะออนไลน์ที่หน้าหลักก่อนรับงาน</div>'}
-  ${a?'<h2 style="font-size:15px">งานที่กำลังทำ</h2>'+jobCard(a,true):''}
+  
   <h2 style="font-size:15px">งานรอรับ (${p.length})</h2>
   ${p.length?p.map(j=>jobCard(j,true)).join(''):'<div class="empty">ตอนนี้ยังไม่มีงานใหม่ ระบบจะรีเฟรชให้ทุก 5 วินาทีขณะออนไลน์</div>'}`;
 }
@@ -290,6 +297,8 @@ function render(){
   $('#nav').innerHTML=[['home','home','หน้าหลัก'],['jobs','box','งาน'+(n?` (${n})`:'')],['history','receipt','ประวัติ'],['settings','sliders','ตั้งค่า']]
     .map(([k,i,l])=>`<button class="${tab===k?'active':''}" data-go="${k}"><span class="tile"><svg class="ic"><use href="#i-${i}"/></svg></span>${l}</button>`).join('');
   const s=$('#topStatus');s.className='online-status'+(online?' on':'');s.lastElementChild.textContent=online?'ออนไลน์':'ออฟไลน์';
+  const ja=active();document.body.classList.toggle('hasbar',!!ja);
+  $('#jobbar').innerHTML=ja?`<div class="barcard"><div class="jobhead"><div class="avatar"><svg class="ic"><use href="#i-scooter"/></svg></div><div class="barinfo"><strong>${esc(ja.shop)}</strong><span class="muted">${ja.status==='picked'?'กำลังไปส่ง':'รอไปรับของ'} · ${esc(dest(ja)[0])}</span></div><div class="amount" style="font-size:18px">${baht(ja.fee)}</div></div><div class="row" style="margin-top:10px">${navBtn(ja)}<button class="primary" data-act="${ja.status==='picked'?'delivered':'picked'}" data-id="${esc(ja.id)}">${ja.status==='picked'?'ส่งสำเร็จ':'รับของแล้ว'}</button></div></div>`:'';
   $('#riderName').textContent=prof.name;
   $('#miniAv').innerHTML=prof.avatar_url?`<img src="${esc(prof.avatar_url)}" alt="">`:'<svg class="ic"><use href="#i-user"/></svg>';
   const dn=done(),td=dn.filter(j=>isToday(j.delivered_at));
