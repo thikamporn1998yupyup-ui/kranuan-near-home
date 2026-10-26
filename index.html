@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>กระนวนใกล้บ้าน · ต้นแบบ</title>
 
-<!-- โหลด LINE LIFF SDK สำหรับเชื่อมต่อโปรไฟล์ LINE ของจริง -->
+<!-- โหลด SDK ของ LINE LIFF -->
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
 <style>
@@ -18,6 +18,7 @@ button{cursor:pointer}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #1e7470;outline-offset:3px}
 .phone{max-width:480px;margin:auto;background:#fffcf6;min-height:100vh;box-shadow:0 0 65px #49321c12;padding-bottom:90px;position:relative}
 
+/* ส่วนหัวย่อ-ขยายตามหน้า */
 .top{background:#f9d35b;padding:20px 22px;border-radius:0 0 30px 30px;transition:all 0.3s ease}
 .brandline{display:flex;align-items:center;justify-content:space-between}
 .brand-left{display:flex;align-items:center;gap:11px}
@@ -47,6 +48,7 @@ p{line-height:1.7}
 .sectionhead h2{margin:0}
 .textbtn{border:0;background:none;color:#d85228;font-size:12px;padding:6px;font-weight:bold}
 
+/* หมวดหมู่ประจำปุ่ม */
 .categories{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
 .category{border:0;background:none;padding:0;color:#655444;font-size:11px;font-weight:bold}
 .category span{display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:56px;border-radius:18px;background:#fff1ca;color:#cf6840;margin:0 auto 6px;border:1px solid #f5e5b6;box-shadow:0 2px 6px rgba(0,0,0,0.03);transition:transform 0.2s}
@@ -66,6 +68,7 @@ p{line-height:1.7}
 .shop button,.card button,.primary{border:0;border-radius:10px;background:#e95d2f;color:white;padding:10px 12px;font-size:12px;margin-top:8px;font-weight:bold}
 .shop button{width:100%}
 
+/* การ์ดประกาศตลาด แสดงรูปโปรไฟล์ */
 .market-card{display:flex;flex-direction:column;background:white;border:1px solid #eee2d3;border-radius:18px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
 .poster-info{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #f7f1e5;background:#fffdfa}
 .poster-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#e95d2f;color:white;display:grid;place-items:center;font-size:11px;font-weight:bold}
@@ -106,7 +109,7 @@ p{line-height:1.7}
   <div class="modal-box">
     <div style="width:64px;height:64px;background:#00B900;border-radius:50%;margin:0 auto;display:grid;place-items:center;color:white;font-size:28px;font-weight:bold;">LINE</div>
     <h3>เข้าสู่ระบบ กระนวนใกล้บ้าน</h3>
-    <p class="muted" style="font-size:12px;margin:10px 0 20px;">เชื่อมต่อโปรไฟล์ LINE ของคุณจริงเพื่อดึงชื่อและรูปภาพโดยอัตโนมัติ</p>
+    <p class="muted" style="font-size:12px;margin:10px 0 20px;">เชื่อมต่อบัญชี LINE ของคุณเพื่อซิงค์ชื่อและรูปภาพโปรไฟล์อัตโนมัติ</p>
     <button class="line-login-btn" onclick="loginWithLine()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349.03 1.12.138 1.62.298.548.177 1.01.442 1.343.815.352.394.572.9.61 1.488.04.62-.128 1.258-.475 1.792-.355.548-.888.983-1.536 1.257-.86.363-1.92.518-3.078.448-1.157-.07-2.315-.36-3.342-.85-.125-.06-.24-.13-.35-.2l-.08.04c-.33.16-.67.31-1.01.45-.63.26-1.3.47-1.99.64-.17.04-.34.07-.51.1-.38.07-.76.13-1.15.17-.37.04-.74.07-1.11.08-.22.01-.44.02-.67.02-.38 0-.75-.02-1.12-.06-.41-.05-.83-.12-1.24-.22-.38-.09-.75-.21-1.11-.36-.45-.19-.88-.42-1.28-.7-.44-.31-.84-.69-1.18-1.13-.35-.45-.62-.97-.79-1.54-.18-.58-.25-1.2-.2-1.82.06-.69.28-1.35.65-1.93.37-.58.87-1.08 1.48-1.45.81-.49 1.77-.8 2.82-.93 1.05-.13 2.18-.08 3.29.15.15.03.3.07.45.11.39.11.77.24 1.15.39.38.15.75.32 1.11.51.11.06.22.12.33.18.15.08.3.17.44.27 1.14.77 2.45 1.24 3.79 1.38 1.34.14 2.7-.03 3.94-.48.38-.14.75-.31 1.11-.51z"/></svg>
       เข้าสู่ระบบด้วย LINE
@@ -124,7 +127,7 @@ p{line-height:1.7}
           <strong>กระนวนใกล้บ้าน</strong>
         </div>
       </div>
-      <!-- ปุ่มแสดงโปรไฟล์ LINE มุมขวาบน -->
+      <!-- ปุ่มโปรไฟล์ LINE มุมขวาบน -->
       <div class="line-profile-btn" onclick="openProfileSettings()">
         <img id="headerUserAvatar" class="line-avatar" src="" alt="User" style="display:none;">
         <div id="headerUserAvatarPlaceholder" class="line-avatar">U</div>
@@ -132,7 +135,6 @@ p{line-height:1.7}
       </div>
     </div>
     
-    <!-- ส่วนหัวต้อนรับที่จะถูกซ่อนอัตโนมัติเมื่อเปลี่ยนหน้า -->
     <div class="top-hero" id="topHeroSection">
       <h1>ทุกวันดี ๆ<br>เริ่มที่ใกล้บ้าน</h1>
       <p>ของอร่อย ร้านดี และบริการจากคนในชุมชน</p>
@@ -168,8 +170,9 @@ p{line-height:1.7}
 <script src="assets/delivery-pricing.js"></script>
 <script>
 const areaId='khon-kaen-kranuan',key='kranuan-isolated-demo-v1';
-// กำหนด Channel ID ของคุณ
-const LINE_CHANNEL_ID = '2012226697'; 
+
+// ✅ LIFF ID ของคุณที่สร้างเสร็จเรียบร้อย
+const LINE_LIFF_ID = '2012226697-VvcpgtpW'; 
 
 let state={orders:[],rider:'none',news:false,currentUser:null};
 try{let s=JSON.parse(localStorage.getItem(key));if(s&&Array.isArray(s.orders))state={...state,...s}}catch{}
@@ -188,10 +191,14 @@ function initUserLocation() {
 }
 initUserLocation();
 
-// ระบบ LINE Login ด้วย LIFF SDK
+// ระบบเชื่อมต่อ LINE LIFF SDK จริง
 async function initLineSDK() {
+  if (typeof liff === 'undefined') {
+    checkFirstTimeLogin();
+    return;
+  }
   try {
-    await liff.init({ liffId: LINE_CHANNEL_ID });
+    await liff.init({ liffId: LINE_LIFF_ID });
     if (liff.isLoggedIn()) {
       const profile = await liff.getProfile();
       state.currentUser = {
@@ -201,11 +208,12 @@ async function initLineSDK() {
       };
       save();
       updateHeaderUserUI();
+      document.getElementById('lineAuthModal').style.display='none';
     } else {
       checkFirstTimeLogin();
     }
   } catch (err) {
-    console.warn("LIFF initialization error, fallback to demo/direct login", err);
+    console.warn("LIFF init error:", err);
     checkFirstTimeLogin();
   }
 }
@@ -213,6 +221,9 @@ async function initLineSDK() {
 function checkFirstTimeLogin(){
   if(!state.currentUser){
     document.getElementById('lineAuthModal').style.display='grid';
+    document.getElementById('headerUserName').textContent = 'เข้าสู่ระบบ';
+    document.getElementById('headerUserAvatar').style.display = 'none';
+    document.getElementById('headerUserAvatarPlaceholder').style.display = 'grid';
   } else {
     updateHeaderUserUI();
   }
@@ -225,15 +236,6 @@ function loginWithLine(){
       return;
     }
   }
-  // Fallback กรณีทดสอบในสภาพแวดล้อมที่ยังไม่ได้ผูก LIFF ID สมบูรณ์
-  state.currentUser = {
-    name: 'คุณณัฐพล',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'
-  };
-  save();
-  document.getElementById('lineAuthModal').style.display='none';
-  updateHeaderUserUI();
-  document.getElementById('notice').textContent='เข้าสู่ระบบและเชื่อมต่อโปรไฟล์สำเร็จ!';
 }
 
 function updateHeaderUserUI(){
@@ -241,17 +243,25 @@ function updateHeaderUserUI(){
     const nameEl = document.getElementById('headerUserName');
     const imgEl = document.getElementById('headerUserAvatar');
     const placeholderEl = document.getElementById('headerUserAvatarPlaceholder');
-    nameEl.textContent = state.currentUser.name;
+    nameEl.textContent = state.currentUser.name || 'ผู้ใช้งาน';
     if(state.currentUser.avatar){
       imgEl.src = state.currentUser.avatar;
       imgEl.style.display = 'block';
       placeholderEl.style.display = 'none';
+    } else {
+      imgEl.style.display = 'none';
+      placeholderEl.style.display = 'grid';
+      placeholderEl.textContent = (state.currentUser.name || 'U').charAt(0);
     }
   }
 }
 
 function openProfileSettings(){
-  if(confirm('ต้องการออกจากระบบหรือสลับบัญชี LINE หรือไม่?')){
+  if(!state.currentUser){
+    loginWithLine();
+    return;
+  }
+  if(confirm('ต้องการออกจากระบบ LINE หรือไม่?')){
     if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
       liff.logout();
     }
@@ -335,7 +345,7 @@ function approveNews(){state.news=true;save()}
 function resetDemo(){
   if(confirm('ล้างเฉพาะข้อมูลทดลองของต้นแบบนี้?')){
     state={orders:[],rider:'none',news:false,currentUser:state.currentUser};
-    state.listings=[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คุณณัฐพล',avatar:'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}}];
+    state.listings=[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คนในชุมชน',avatar:''}}];
     save();
   }
 }
@@ -380,7 +390,7 @@ function topNav(){
 }
 
 const originalRender=render;
-state.listings=Array.isArray(state.listings)?state.listings:[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คุณณัฐพล',avatar:'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}}];
+state.listings=Array.isArray(state.listings)?state.listings:[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คนในชุมชน',avatar:''}}];
 
 render=function(){
   if(!['ร้านค้า','ตลาด','เรียกไรเดอร์'].includes(view)){
@@ -415,8 +425,8 @@ function adInfo(){document.getElementById('notice').textContent='พื้นท
 
 function marketResults(){
   document.getElementById('marketResults').innerHTML=state.listings.filter(l=>l.areaId===areaId&&l.status==='approved'&&l.title.includes(query)).map(l=>{
-    const posterName = l.poster ? l.poster.name : (state.currentUser ? state.currentUser.name : 'คุณณัฐพล');
-    const posterAvatar = l.poster ? l.poster.avatar : (state.currentUser ? state.currentUser.avatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80');
+    const posterName = l.poster ? l.poster.name : (state.currentUser ? state.currentUser.name : 'คนในชุมชน');
+    const posterAvatar = l.poster ? l.poster.avatar : (state.currentUser ? state.currentUser.avatar : '');
     const avatarHtml = posterAvatar ? '<img class="poster-avatar" src="'+posterAvatar+'" alt="'+escapeHtml(posterName)+'">' : '<div class="poster-avatar">'+posterName.charAt(0)+'</div>';
     
     return '<article class="market-card">'+
@@ -435,7 +445,7 @@ function listingForm(){
   document.getElementById('listingForm').onsubmit=e=>{
     e.preventDefault();
     const data=new FormData(e.target);
-    const posterInfo = state.currentUser ? {name: state.currentUser.name, avatar: state.currentUser.avatar} : {name: 'คุณณัฐพล', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'};
+    const posterInfo = state.currentUser ? {name: state.currentUser.name, avatar: state.currentUser.avatar} : {name: 'สมาชิกกระนวน', avatar: ''};
     state.listings.push({
       id:'L'+Date.now(), areaId,
       title:String(data.get('title')).trim(),
