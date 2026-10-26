@@ -188,6 +188,15 @@ const statuses={waiting:'รอร้านรับออเดอร์',ready
 
 function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch{document.getElementById('notice').textContent='บันทึกไม่ได้ ข้อมูลอยู่เฉพาะหน้านี้'}render()}
 
+function advance(id,next){
+  let o=state.orders.find(o=>o.id===id&&o.areaId===areaId);
+  if(o?.status==='seller'&&['ready','cancelled'].includes(next)){o.status=next;save();return}
+  let allowed={waiting:['ready','cancelled'],ready:['assigned'],assigned:['picked'],picked:['done']};
+  if(!o||!allowed[o.status]?.includes(next))return;
+  if(['assigned','picked','done'].includes(next)&&state.rider!=='approved')return;
+  o.status=next;save();
+}
+
 function render(){
   document.getElementById('nav').innerHTML=['ร้านค้า','ข่าว','ออเดอร์ของฉัน','ร้านรับงาน','ไรเดอร์','ผู้ดูแล'].map(x=>'<button onclick="view=&quot;'+x+'&quot;;render()">'+x+'</button>').join('');
   let h='<h2>'+view+'</h2>';
@@ -210,7 +219,6 @@ function createOrder(){
 
 function action(o,next,label){return '<button onclick="advance(&quot;'+o.id+'&quot;,&quot;'+next+'&quot;)">'+label+'</button> '}
 
-// ฟังก์ชันออเดอร์ที่ปรับปรุงให้แสดงระยะทางและปุ่ม Google Maps นำทาง
 function orders(){
   return state.orders.filter(o=>o.areaId===areaId&&(view!=='ไรเดอร์'||['ready','assigned','picked','done'].includes(o.status))).map(o=>{
     let distanceHtml = '';
@@ -240,14 +248,6 @@ function orders(){
            (view==='ไรเดอร์'&&o.status==='picked'?action(o,'done','ยืนยันส่งสำเร็จ'):'')+
            '</article>';
   }).join('')||'<p class="empty">ยังไม่มีงานในขั้นตอนนี้</p>';
-}
-
-function advance(id,next){
-  let o=state.orders.find(o=>o.id===id&&o.areaId===areaId),
-      allowed={waiting:['ready','cancelled'],ready:['assigned'],assigned:['picked'],picked:['done']};
-  if(!o||!allowed[o.status]?.includes(next))return;
-  if(['assigned','picked','done'].includes(next)&&state.rider!=='approved')return;
-  o.status=next;save();
 }
 
 function applyRider(){if(state.rider==='none'){state.rider='pending';save()}}
@@ -324,11 +324,6 @@ function objectArt(type){
   return '<svg viewBox="0 0 180 140" aria-hidden="true"><ellipse cx="90" cy="115" rx="56" ry="9" fill="#724e2d" opacity=".1"/>'+(type==='market'?'<path d="M49 51h82v56H49z" fill="#c88d50"/><path d="m49 51 41-22 41 22-41 22Z" fill="#e7b77a"/><path d="M90 73v34" stroke="#aa713c" stroke-width="3"/><path d="m70 40 40 23v18l-15-8V55" fill="#fff0cb"/><circle cx="130" cy="39" r="22" fill="#fff8e4"/><path d="m120 39 7 7 14-15" fill="none" stroke="#799174" stroke-width="4"/>':'<circle cx="90" cy="72" r="43" fill="#f6d49e"/><path d="m65 96 35-36m-2-19a19 19 0 0 0-19 26L58 88a9 9 0 0 0 13 13l24-24a19 19 0 0 0 24-23l-13 13-12-12 13-13" fill="#ee7645" stroke="#fff2d4" stroke-width="3"/>')+'</svg>'
 }
 
-results=function(){
-  const list=sample.filter(s=>s.name.includes(query)&&(category==='ทั้งหมด'||s.category===category));
-  document.getElementById('results').innerHTML=list.map(s=>'<article class="shop"><div class="cover"><span class="sampletag">ร้านสมมติ</span>'+(s.category==='อาหาร'?foodArt():objectArt('service'))+'</div><div class="shopbody"><p>'+s.category+' · กระนวน</p><h3>'+s.name+'</h3><p>ช่องทางติดต่อ: ยังไม่มีข้อมูลจริง</p>'+(s.category==='อาหาร'?'<span class="price">50 บาท</span><p>คำนวณค่าส่งจากพิกัดในขั้นตอนถัดไป</p><button onclick="createOrder()">สั่งข้าวกล่องทดลอง</button>':'<p>บริการซ่อมในชุมชน</p><button onclick="serviceInfo()">ดูรายละเอียดบริการ</button>')+'</div></article>').join('')||'<p class="empty">ยังไม่มีร้านตัวอย่างในหมวดนี้</p>'
-}
-
 function adInfo(){document.getElementById('notice').textContent='พื้นที่โฆษณาตัวอย่าง ยังไม่มีผู้ลงโฆษณา อัตราค่าโฆษณา หรือระบบซื้อโฆษณา';window.scrollTo({top:180,behavior:'smooth'})}
 function serviceInfo(){document.getElementById('notice').textContent='ช่างใกล้บ้าน (สมมติ): ตัวอย่างบริการซ่อมทั่วไป ยังไม่มีเบอร์ติดต่อจริง'}
 
@@ -365,13 +360,6 @@ function requestMarketDelivery(id){
   state.orders.push({id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),areaId,status:'seller',type:'market',item:l.title,itemPrice:l.price,deliveryFee:20});
   go('ออเดอร์ของฉัน');save();
   document.getElementById('notice').textContent='คำขอจำลอง: ค่าส่ง 20 บาท รอผู้ขายยืนยัน ยอดสินค้าแยกตกลงกับผู้ขาย ไม่มีการเรียกเก็บเงินจริง'
-}
-
-const oldAdvance=advance;
-advance=function(id,next){
-  const o=state.orders.find(o=>o.id===id&&o.areaId===areaId);
-  if(o?.status==='seller'&&['ready','cancelled'].includes(next)){o.status=next;save();return}
-  oldAdvance(id,next)
 }
 
 const instantCreateFood=createOrder, instantCreateMarket=requestMarketDelivery;
@@ -441,6 +429,9 @@ function submitDemoTip(e,id){
     document.getElementById('notice').textContent='จำนวนทิปไม่ถูกต้อง';
   }
 }
+
+// สั่งให้เรนเดอร์หน้าเว็บครั้งแรกหลังจากโหลดสคริปต์เสร็จ
+render();
 </script>
 </body>
 </html>
