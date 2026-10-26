@@ -181,6 +181,24 @@ const baht=n=>'฿'+Number(n||0).toLocaleString('th-TH');
 const JOB_KEY='kranuan_jobs2',PROF_KEY='kranuan_profile';
 /* เชื่อมฐานข้อมูล: แก้ตรงนี้ที่เดียว (mode = 'local' หรือ 'supabase') */
 const cfg={mode:'local',url:'',key:'',riderId:'rider-1',support:''}; // support = เบอร์ฝ่ายดูแลไรเดอร์ (เว้นว่างได้)
+/* ===== ตัวแปรสถานะและตัวช่วยฐานข้อมูล ===== */
+let tab='home',online=false,jobs=[],seen=null,pos=null,lastErr='',noticeTimer,lastPush=0;
+const isLocal=()=>cfg.mode!=='supabase';
+function seed(){
+  const now=Date.now(),mk=(i,shop,pickup,dropoff,km,fee,cn,min)=>({id:'J'+i,shop,pickup,dropoff,distance_km:km,fee,status:'pending',rider_id:null,customer_id:'c'+i,customer_name:cn,created_at:new Date(now-min*60000).toISOString()});
+  return [
+    mk(1,'ร้านก๋วยเตี๋ยวป้าแดง','ตลาดสดกระนวน','บ้านโนนสวรรค์ หมู่ 4',2.5,40,'คุณสมชาย',3),
+    mk(2,'ร้านชานมกระนวน','หน้าโรงเรียนกระนวน','หมู่บ้านทุ่งนา หมู่ 2',1.8,30,'คุณมาลี',2),
+    mk(3,'ครัวแม่ทองดี','ถนนมะลิวัลย์','บ้านขามเรียง',4.2,60,'คุณวิชัย',1)
+  ];
+}
+function lsGet(){try{const l=JSON.parse(localStorage.getItem(JOB_KEY)||'null');if(Array.isArray(l))return l}catch(e){}const s=seed();lsSet(s);return s}
+function lsSet(l){try{localStorage.setItem(JOB_KEY,JSON.stringify(l))}catch(e){}}
+async function api(path,o={}){
+  const r=await fetch(cfg.url.replace(/\/$/,'')+'/rest/v1'+path,{...o,headers:{apikey:cfg.key,Authorization:'Bearer '+cfg.key,'Content-Type':'application/json',Prefer:'return=representation',...(o.headers||{})}});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const t=await r.text();return t?JSON.parse(t):null;
+}
 const BANKS=['ธนาคารกสิกรไทย','ธนาคารไทยพาณิชย์','ธนาคารกรุงเทพ','ธนาคารกรุงไทย','ธนาคารกรุงศรีอยุธยา','ธนาคารทหารไทยธนชาต','ธนาคารออมสิน','ธ.ก.ส.'];
 const ACC={orange:['#e95f2b','233,95,43','#ff8a5c','ส้มกระนวน'],coral:['#ef6264','239,98,100','#ff7a7c','ชมพูกระนวน'],green:['#2fbf71','47,191,113','#5fe09a','เขียวทุ่งนา'],blue:['#3b9cf0','59,156,240','#6cb6ff','ฟ้าลำน้ำ'],violet:['#9b7bf0','155,123,240','#b69cff','ม่วงพลบค่ำ']};
 const SUR={
