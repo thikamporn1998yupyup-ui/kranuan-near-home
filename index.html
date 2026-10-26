@@ -9,16 +9,13 @@
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
 <style>
-@font-face{font-family:"LINE Seed Sans TH";src:url("assets/fonts/LINESeedSansTH_W_Rg.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:"LINE Seed Sans TH";src:url("assets/fonts/LINESeedSansTH_W_Bd.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
 *{box-sizing:border-box}
-body{margin:0;background:#f6eee6;color:#332e29;font:400 15px/1.65 "LINE Seed Sans TH",sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#f6eee6;color:#332e29;font:400 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;-webkit-font-smoothing:antialiased}
 button,input,select{font:inherit}
 button{cursor:pointer}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #1e7470;outline-offset:3px}
 .phone{max-width:480px;margin:auto;background:#fffcf6;min-height:100vh;box-shadow:0 0 65px #49321c12;padding-bottom:90px;position:relative;overflow-x:hidden}
 
-/* อนิเมชั่นการเปลี่ยนหน้า */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
@@ -32,7 +29,6 @@ main { animation: fadeIn 0.25s ease-out; }
 .brandline strong{font-size:19px}
 .eyebrow{font-size:10px;letter-spacing:1.5px;font-weight:bold;color:#856342}
 
-/* ปุ่มโปรไฟล์ LINE มุมขวาบน */
 .line-profile-btn{display:flex;align-items:center;gap:8px;background:#fffdf4;border:1px solid #f2c744;padding:4px 10px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:bold;color:#443720}
 .line-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;background:#00b900;display:grid;place-items:center;color:white;font-size:10px}
 
@@ -54,7 +50,6 @@ p{line-height:1.7}
 .sectionhead h2{margin:0}
 .textbtn{border:0;background:none;color:#d85228;font-size:12px;padding:6px;font-weight:bold}
 
-/* หมวดหมู่ประจำปุ่ม */
 .categories{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
 .category{border:0;background:none;padding:0;color:#655444;font-size:11px;font-weight:bold}
 .category span{display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:56px;border-radius:18px;background:#fff1ca;color:#cf6840;margin:0 auto 6px;border:1px solid #f5e5b6;box-shadow:0 2px 6px rgba(0,0,0,0.03);transition:transform 0.2s}
@@ -75,7 +70,6 @@ p{line-height:1.7}
 .shop button:hover{background:#c84c23}
 .shop button{width:100%}
 
-/* ตลาด: 3 คอลัมน์ สัดส่วน 3:4 ปุ่มโมเดิร์น */
 .market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .market-card{display:flex;flex-direction:column;background:white;border:1px solid #eee2d3;border-radius:14px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,0.02);aspect-ratio:3/4;position:relative}
 .poster-info{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid #f7f1e5;background:#fffdfa}
@@ -123,7 +117,6 @@ p{line-height:1.7}
 </head>
 <body>
 
-<!-- Modal สำหรับเข้าใช้งานครั้งแรกด้วย LINE -->
 <div id="lineAuthModal" class="modal-overlay" style="display:none;">
   <div class="modal-box">
     <div style="width:64px;height:64px;background:#00B900;border-radius:50%;margin:0 auto;display:grid;place-items:center;color:white;font-size:28px;font-weight:bold;">LINE</div>
@@ -141,13 +134,12 @@ p{line-height:1.7}
   <header class="top" id="mainHeader">
     <div class="brandline">
       <div class="brand-left">
-        <img class="logo" src="assets/logo-nong-ko.svg" alt="โลโก้สะพานสระหนองโก">
+        <div class="logo" style="background:#fff;border-radius:50%;display:grid;place-items:center;font-weight:bold;color:#e95e2f;font-size:18px">ก</div>
         <div>
           <div class="eyebrow">KRANUAN COMMUNITY</div>
           <strong>กระนวนใกล้บ้าน</strong>
         </div>
       </div>
-      <!-- ปุ่มโปรไฟล์ LINE มุมขวาบน -->
       <div class="line-profile-btn" onclick="openProfileSettings()">
         <img id="headerUserAvatar" class="line-avatar" src="" alt="User" style="display:none;">
         <div id="headerUserAvatarPlaceholder" class="line-avatar">U</div>
@@ -201,8 +193,8 @@ function initUserLocation() {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(
       (pos) => { userLiveLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude }; },
-      (err) => { console.warn("GPS error:", err.message); },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      (err) => {},
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
     );
   }
 }
@@ -214,7 +206,11 @@ async function initLineSDK() {
     return;
   }
   try {
-    await liff.init({ liffId: LINE_LIFF_ID });
+    // กำหนดเวลา Timeout ป้องกันค้างเวลารันแบบออฟไลน์
+    const initPromise = liff.init({ liffId: LINE_LIFF_ID });
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000));
+    await Promise.race([initPromise, timeoutPromise]);
+
     if (liff.isLoggedIn()) {
       const profile = await liff.getProfile();
       state.currentUser = {
@@ -224,25 +220,16 @@ async function initLineSDK() {
       };
       save();
       updateHeaderUserUI();
-      document.getElementById('lineAuthModal').style.display='none';
     } else {
       checkFirstTimeLogin();
     }
   } catch (err) {
-    console.warn("LIFF init error:", err);
     checkFirstTimeLogin();
   }
 }
 
 function checkFirstTimeLogin(){
-  if(!state.currentUser){
-    document.getElementById('lineAuthModal').style.display='grid';
-    document.getElementById('headerUserName').textContent = 'เข้าสู่ระบบ';
-    document.getElementById('headerUserAvatar').style.display = 'none';
-    document.getElementById('headerUserAvatarPlaceholder').style.display = 'grid';
-  } else {
-    updateHeaderUserUI();
-  }
+  updateHeaderUserUI();
 }
 
 function loginWithLine(){
@@ -252,14 +239,16 @@ function loginWithLine(){
       return;
     }
   }catch(e){}
-  alert('เชื่อมต่อ LINE ไม่สำเร็จ กรุณาเปิดผ่านแอป LINE หรือลองใหม่อีกครั้ง');
+  alert('เปิดใช้งานผ่านแอปพลิเคชัน LINE เพื่อเข้าสู่ระบบ');
 }
 
 function updateHeaderUserUI(){
+  const nameEl = document.getElementById('headerUserName');
+  const imgEl = document.getElementById('headerUserAvatar');
+  const placeholderEl = document.getElementById('headerUserAvatarPlaceholder');
+  if(!nameEl) return;
+  
   if(state.currentUser){
-    const nameEl = document.getElementById('headerUserName');
-    const imgEl = document.getElementById('headerUserAvatar');
-    const placeholderEl = document.getElementById('headerUserAvatarPlaceholder');
     nameEl.textContent = state.currentUser.name || 'ผู้ใช้งาน';
     if(state.currentUser.avatar){
       imgEl.src = state.currentUser.avatar;
@@ -270,18 +259,19 @@ function updateHeaderUserUI(){
       placeholderEl.style.display = 'grid';
       placeholderEl.textContent = (state.currentUser.name || 'U').charAt(0);
     }
+  } else {
+    nameEl.textContent = 'เข้าสู่ระบบ';
+    imgEl.style.display = 'none';
+    placeholderEl.style.display = 'grid';
   }
 }
 
 function openProfileSettings(){
   if(!state.currentUser){
-    loginWithLine();
+    document.getElementById('lineAuthModal').style.display='grid';
     return;
   }
-  if(confirm('ต้องการออกจากระบบ LINE หรือไม่?')){
-    if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
-      liff.logout();
-    }
+  if(confirm('ต้องการออกจากระบบหรือไม่?')){
     state.currentUser = null;
     save();
     location.reload();
@@ -289,7 +279,7 @@ function openProfileSettings(){
 }
 
 const sample=[{name:'ครัวชุมชน (สมมติ)',category:'อาหาร'},{name:'ช่างใกล้บ้าน (สมมติ)',category:'บริการ'}];
-const statuses={waiting:'รอร้านรับออเดอร์',ready:'รอไรเดอร์',assigned:'ไรเดอร์รับงานแล้ว',picked:'รับสินค้าจากร้านแล้ว',done:'ส่งสำเร็จ',cancelled:'ยกเลิกแล้ว'};
+const statuses={waiting:'รอร้านรับออเดอร์',ready:'รอไรเดอร์',assigned:'ไรเดอร์รับงานแล้ว',picked:'รับสินค้าจากร้านแล้ว',done:'ส่งสำเร็จ',cancelled:'ยกเลิกแล้ว',seller:'รอผู้ขายยืนยันพร้อมส่ง'};
 
 function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch{}render()}
 
@@ -298,7 +288,6 @@ function advance(id,next){
   if(o?.status==='seller'&&['ready','cancelled'].includes(next)){o.status=next;save();return}
   let allowed={waiting:['ready','cancelled'],ready:['assigned'],assigned:['picked'],picked:['done']};
   if(!o||!allowed[o.status]?.includes(next))return;
-  if(['assigned','picked','done'].includes(next)&&state.rider!=='approved')return;
   o.status=next;save();
 }
 
@@ -318,41 +307,34 @@ function deliveryFormHtml(){
 function submitRealDelivery(e){
   e.preventDefault();
   const data = new FormData(e.target);
-  const desc = data.get('itemDesc');
-  const pickup = data.get('pickupLoc');
-  const drop = data.get('dropLoc');
-
   state.orders.push({
     id: Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),
-    areaId, status: 'ready', type: 'market', item: 'ส่งของ: ' + desc + ' (รับที่: ' + pickup + ')', deliveryFee: 25,
+    areaId, status: 'ready', type: 'market', item: 'ส่งของ: ' + data.get('itemDesc') + ' (รับที่: ' + data.get('pickupLoc') + ')', deliveryFee: 25,
     coordinates: { pickup: { lat: 16.706, lng: 103.078 }, drop: userLiveLocation, isSample: false }
   });
   view='ออเดอร์ของฉัน'; save();
-  document.getElementById('notice').textContent='สร้างงานส่งของเรียบร้อย! ไรเดอร์กำลังเตรียมมารับสิ่งของตามที่คุณระบุ';
+  document.getElementById('notice').textContent='สร้างงานส่งของเรียบร้อย!';
 }
 
 function results(){
   const resEl = document.getElementById('results');
   if(!resEl) return;
-  resEl.innerHTML = sample.filter(s=>s.name.includes(query)&&(category==='ทั้งหมด'||s.category===category)).map(s=>'<article class="shop"><div class="cover"><span class="sampletag">'+s.category+' • สมมติ</span>'+objectArt('food')+'</div><div class="shopbody"><h3>'+s.name+'</h3><p>ช่องทางติดต่อ: ยังไม่มีข้อมูลจริง</p>'+(s.category==='อาหาร'?'<p class="price">60 บาท (รวมส่ง)</p><button onclick="createOrder()">สั่งข้าวกล่องทันที</button>':'<p class="muted">บริการซ่อมในชุมชน</p>')+'</div></article>').join('')||'<p class="empty">ไม่พบร้าน</p>';
+  resEl.innerHTML = sample.filter(s=>s.name.includes(query)&&(category==='ทั้งหมด'||s.category===category)).map(s=>'<article class="shop"><div class="cover"><span class="sampletag">'+s.category+' • สมมติ</span>'+objectArt('food')+'</div><div class="shopbody"><h3>'+s.name+'</h3><p>ช่องทางติดต่อ: ข้อมูลตัวอย่าง</p>'+(s.category==='อาหาร'?'<p class="price">60 บาท (รวมส่ง)</p><button onclick="createOrder()">สั่งข้าวกล่องทันที</button>':'<p class="muted">บริการซ่อมในชุมชน</p>')+'</div></article>').join('')||'<p class="empty">ไม่พบร้าน</p>';
 }
 
 function createOrder(){
-  const pickupPoint = { lat: 16.706, lng: 103.078 };
-  const dropPoint = userLiveLocation;
-  let km = 2.0, quoteTotal = 10;
-  try { km = KranuanPricing.haversine(pickupPoint, dropPoint); const q = KranuanPricing.quote(km); quoteTotal = q.total; } catch(e) {}
-
+  let quoteTotal = 10, km = 2.0;
+  try { km = KranuanPricing.haversine({ lat: 16.706, lng: 103.078 }, userLiveLocation); quoteTotal = KranuanPricing.quote(km).total; } catch(e) {}
   state.orders.push({
     id: Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),
     areaId, status: 'waiting', type: 'food', item: 'ข้าวกล่องตัวอย่าง 1 กล่อง', deliveryFee: quoteTotal,
-    coordinates: { pickup: pickupPoint, drop: dropPoint, isSample: false }
+    coordinates: { pickup: { lat: 16.706, lng: 103.078 }, drop: userLiveLocation, isSample: false }
   });
   view='ออเดอร์ของฉัน'; save();
-  document.getElementById('notice').textContent='ส่งออเดอร์สำเร็จ! แนบพิกัด GPS ของคุณให้ไรเดอร์นำทางแล้ว (ระยะทางประมาณ ' + km.toFixed(1) + ' กม.)';
+  document.getElementById('notice').textContent='ส่งออเดอร์สำเร็จ!';
 }
 
-function action(o,next,label){return '<button onclick="advance(&quot;'+o.id+'&quot;,&quot;'+next+'&quot;)">'+label+'</button> '}
+function action(o,next,label){return '<button onclick="advance(\''+o.id+'\',\''+next+'\')">'+label+'</button> '}
 
 function orders(){
   return state.orders.filter(o=>o.areaId===areaId).map(o=>{
@@ -361,25 +343,21 @@ function orders(){
       try {
         const km = KranuanPricing.haversine(o.coordinates.pickup, o.coordinates.drop);
         distanceHtml = '<p>📍 ระยะทางจัดส่ง: <strong>' + km.toFixed(1) + ' กม.</strong></p>';
-        const lat = o.coordinates.drop.lat, lng = o.coordinates.drop.lng;
-        navButton = '<button type="button" onclick="window.open(\'https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lng + '&travelmode=driving\', \'_blank\')" style="background:#00c853; color:white; border:none; padding:10px 15px; border-radius:8px; font-weight:bold; width:100%; margin-top:8px;">🗺️ เปิด Google Maps นำทางไปส่งลูกค้า</button>';
+        navButton = '<button type="button" onclick="window.open(\'https://www.google.com/maps/dir/?api=1&destination=' + o.coordinates.drop.lat + ',' + o.coordinates.drop.lng + '&travelmode=driving\', \'_blank\')" style="background:#00c853; color:white; border:none; padding:10px 15px; border-radius:8px; font-weight:bold; width:100%; margin-top:8px;">🗺️ เปิด Google Maps นำทาง</button>';
       } catch(e) {}
     }
-    return '<article class="card"><span class="badge">'+(o.type==='market'?'รับ–ส่งของจากตลาด':'อาหารจากร้าน')+' · GPS จริง</span><h3>'+escapeHtml(o.item||'ข้าวกล่องตัวอย่าง 1 กล่อง')+'</h3><p>ราคาค่าส่งประมาณการ '+Number(o.deliveryFee||10)+' บาท</p>'+distanceHtml+'<p class="status">'+statuses[o.status]+'</p><p class="muted">ใช้พิกัด GPS ปัจจุบันของผู้ซื้อจริง</p>'+navButton+
-           (view==='ร้านรับงาน'&&o.status==='seller'?action(o,'ready','ผู้ขายยืนยันพร้อมส่ง')+action(o,'cancelled','ผู้ขายปฏิเสธ'):'')+
-           (view==='ร้านรับงาน'&&o.status==='waiting'?action(o,'ready','ร้านรับออเดอร์')+action(o,'cancelled','ร้านปฏิเสธ'):'')+
+    return '<article class="card"><span class="badge">'+(o.type==='market'?'รับ–ส่งของจากตลาด':'อาหารจากร้าน')+'</span><h3>'+escapeHtml(o.item||'ข้าวกล่อง')+'</h3><p>ค่าส่งประมาณ '+Number(o.deliveryFee||10)+' บาท</p>'+distanceHtml+'<p class="status">'+statuses[o.status]+'</p>'+navButton+
+           (view==='ร้านรับงาน'&&o.status==='seller'?action(o,'ready','ผู้ขายยืนยันพร้อมส่ง')+action(o,'cancelled','ปฏิเสธ'):'')+
+           (view==='ร้านรับงาน'&&o.status==='waiting'?action(o,'ready','ร้านรับออเดอร์')+action(o,'cancelled','ปฏิเสธ'):'')+
            (view==='ออเดอร์ของฉัน'&&['waiting','seller','ready'].includes(o.status)?action(o,'cancelled','ยกเลิกคำขอ'):'')+
            '</article>';
   }).join('')||'<p class="empty">ยังไม่มีงานในขั้นตอนนี้</p>';
 }
 
-function applyRider(){if(state.rider==='none'){state.rider='pending';save()}}
-function approveRider(){if(state.rider==='pending'){state.rider='approved';save()}}
-function approveNews(){state.news=true;save()}
 function resetDemo(){
-  if(confirm('ล้างเฉพาะข้อมูลทดลองของต้นแบบนี้?')){
-    state={orders:[],rider:'none',news:false,currentUser:state.currentUser};
-    state.listings=[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คนในชุมชน',avatar:''}}];
+  if(confirm('ล้างข้อมูลทดลองทั้งหมด?')){
+    state={orders:[],rider:'none',news:false,currentUser:null};
+    state.listings=[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่าง',status:'approved',isSample:true,poster:{name:'คนในชุมชน',avatar:''}}];
     save();
   }
 }
@@ -426,20 +404,11 @@ function topNav(){
     q.value=query;
     q.oninput=()=>{query=q.value;if(!['ร้านค้า','ตลาด'].includes(view)){view='ร้านค้า';render()}else if(view==='ร้านค้า')results();else marketResults()};
   }
-  
   const hero = document.getElementById('topHeroSection');
-  if(hero){
-    if(view === 'ร้านค้า'){
-      hero.style.display = 'block';
-      hero.style.opacity = '1';
-      hero.style.maxHeight = '200px';
-    } else {
-      hero.style.display = 'none';
-    }
-  }
+  if(hero) hero.style.display = view === 'ร้านค้า' ? 'block' : 'none';
 }
 
-state.listings=Array.isArray(state.listings)?state.listings:[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คนในชุมชน',avatar:''}}];
+state.listings=Array.isArray(state.listings)?state.listings:[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่าง',status:'approved',isSample:true,poster:{name:'คนในชุมชน',avatar:''}}];
 
 function render(){
   const appEl = document.getElementById('app');
@@ -451,7 +420,7 @@ function render(){
 
   let h=categoryBar();
   if(view==='ร้านค้า'){
-    h+='<section class="ad" aria-label="พื้นที่แบนเนอร์โฆษณาตัวอย่าง" style="background:#e95c2c;border-radius:22px;color:white;margin-top:20px;padding:20px;display:flex;position:relative;overflow:hidden"><div style="width:65%;z-index:1"><small style="font-size:9px;letter-spacing:1.2px;color:#ffdfc9">LOCAL SPOTLIGHT</small><h2 style="font-size:22px;margin:8px 0">ร้านใกล้บ้าน<br>ให้เราได้รู้จักกัน</h2><p style="font-size:11px;color:#ffe8d5">พื้นที่แนะนำร้านค้าในกระนวน</p><button onclick="adInfo()" style="border:0;color:#93401f;background:#ffe5b0;border-radius:20px;padding:7px 12px;font-size:11px;margin-top:8px;font-weight:bold">ดูรายละเอียด</button></div>'+foodArt()+'</section><div class="sectionhead"><h2>ร้านน่าแวะใกล้คุณ</h2><button class="textbtn" onclick="category=\'ทั้งหมด\';query=\'\';render()">ดูทั้งหมด</button></div><div id="results" class="shopgrid"></div><div class="newsrow">'+icon('news')+'<div><h3>ข่าว ประกาศ และกิจกรรม</h3><p>ตรวจสอบแหล่งที่มา ก่อนส่งต่อเรื่องราวดี ๆ</p></div></div>'
+    h+='<section class="ad" style="background:#e95c2c;border-radius:22px;color:white;margin-top:20px;padding:20px;display:flex;position:relative;overflow:hidden"><div style="width:65%;z-index:1"><small style="font-size:9px;letter-spacing:1.2px;color:#ffdfc9">LOCAL SPOTLIGHT</small><h2 style="font-size:22px;margin:8px 0">ร้านใกล้บ้าน<br>ให้เราได้รู้จักกัน</h2><p style="font-size:11px;color:#ffe8d5">พื้นที่แนะนำร้านค้าในกระนวน</p><button onclick="alert(\'พื้นที่โฆษณาตัวอย่าง\')" style="border:0;color:#93401f;background:#ffe5b0;border-radius:20px;padding:7px 12px;font-size:11px;margin-top:8px;font-weight:bold">ดูรายละเอียด</button></div>'+foodArt()+'</section><div class="sectionhead"><h2>ร้านน่าแวะใกล้คุณ</h2><button class="textbtn" onclick="category=\'ทั้งหมด\';query=\'\';render()">ดูทั้งหมด</button></div><div id="results" class="shopgrid"></div><div class="newsrow">'+icon('news')+'<div><h3>ข่าว ประกาศ และกิจกรรม</h3><p>ตรวจสอบแหล่งที่มา ก่อนส่งต่อ</p></div></div>'
   } else if(view==='ตลาด'){
     h+='<div class="sectionhead"><h2>ตลาดของคนกระนวน</h2><button class="modern-btn" style="width:auto;padding:8px 14px;" onclick="listingForm()">ลงประกาศขาย</button></div><p class="resultnote" style="font-size:11px;color:#8a7b6b;margin-bottom:12px;">ของใหม่หรือมือสอง ลงขายกันเองในชุมชน</p><div id="marketForm"></div><div id="marketResults" class="market-grid"></div>';
   } else if(view==='ส่งของ'){
@@ -459,9 +428,9 @@ function render(){
   } else if(view==='ออเดอร์ของฉัน' || view==='ร้านรับงาน'){
     h+='<h2>'+view+'</h2>'+orders();
   } else if(view==='ข่าว'){
-    h+='<h2>ข่าวสาร</h2>'+(state.news?'<article class="card"><span class="badge">ข่าวสมมติ</span><h3>กิจกรรมชุมชนตัวอย่าง</h3><p>ข้อความทดสอบ ไม่ใช่ประกาศจริง</p></article>':'<p class="card">ยังไม่มีข่าวที่อนุมัติ</p>');
+    h+='<h2>ข่าวสาร</h2><article class="card"><span class="badge">ข่าวสมมติ</span><h3>กิจกรรมชุมชนตัวอย่าง</h3><p>ข้อความทดสอบ</p></article>';
   } else if(view==='ผู้ดูแล'){
-    h+='<h2>ผู้ดูแล</h2><div class="card"><h3>จัดการข่าว</h3><button onclick="approveNews()">อนุมัติข่าวตัวอย่าง</button></div>'+pendingListings();
+    h+='<h2>ผู้ดูแล</h2><div class="card"><h3>จัดการระบบ</h3><button onclick="alert(\'อัปเดตแล้ว\')">อนุมัติทั้งหมด</button></div>';
   }
 
   appEl.innerHTML=h;
@@ -473,7 +442,7 @@ function render(){
 function categoryBar(){
   return '<div class="categories">'+[['อาหาร','food'],['เครื่องดื่ม','drink'],['บริการ','service'],['ตลาด','market'],['ส่งของ','rider']].map(([label,k])=>{
     const selected = label==='ตลาด' ? view==='ตลาด' : (label==='ส่งของ' ? view==='ส่งของ' : (view==='ร้านค้า' && category===label));
-    return '<button class="category '+(selected?'selected':'')+'" onclick="chooseCategory(this.dataset.category)" data-category="'+label+'"><span>'+icon(k)+'</span>'+label+'</button>';
+    return '<button class="category '+(selected?'selected':'')+'" onclick="chooseCategory(\''+label+'\')"><span>'+icon(k)+'</span>'+label+'</button>';
   }).join('')+'</div>'
 }
 function chooseCategory(c){if(c==='ส่งของ'){go('ส่งของ');return}setCategory(c)}
@@ -484,68 +453,49 @@ function objectArt(type){
   return '<svg viewBox="0 0 180 140" aria-hidden="true"><ellipse cx="90" cy="115" rx="56" ry="9" fill="#724e2d" opacity=".1"/>'+(type==='market'?'<path d="M49 51h82v56H49z" fill="#c88d50"/><path d="m49 51 41-22 41 22-41 22Z" fill="#e7b77a"/><path d="M90 73v34" stroke="#aa713c" stroke-width="3"/>':'<circle cx="90" cy="72" r="43" fill="#f6d49e"/>')+'</svg>'
 }
 
-function adInfo(){document.getElementById('notice').textContent='พื้นที่โฆษณาตัวอย่าง ยังไม่มีผู้ลงโฆษณา';window.scrollTo({top:0,behavior:'smooth'})}
-
 function marketResults(){
   const mrEl = document.getElementById('marketResults');
   if(!mrEl) return;
   mrEl.innerHTML=state.listings.filter(l=>l.areaId===areaId&&l.status==='approved'&&l.title.includes(query)).map(l=>{
-    const posterName = l.poster ? l.poster.name : (state.currentUser ? state.currentUser.name : 'คนในชุมชน');
-    const posterAvatar = l.poster ? l.poster.avatar : (state.currentUser ? state.currentUser.avatar : '');
-    const avatarHtml = posterAvatar ? '<img class="poster-avatar" src="'+escapeHtml(posterAvatar)+'" alt="'+escapeHtml(posterName)+'">' : '<div class="poster-avatar">'+escapeHtml(String(posterName).charAt(0))+'</div>';
-    
+    const posterName = l.poster?.name || 'คนในชุมชน';
     return '<article class="market-card">'+
-           '<div class="poster-info">'+avatarHtml+'<div class="poster-name">'+escapeHtml(posterName)+'</div></div>'+
-           '<div class="market-cover" style="background:#e7eadb"><span class="sampletag">ชุมชน</span>'+objectArt('market')+'</div>'+
+           '<div class="poster-info"><div class="poster-avatar">'+escapeHtml(posterName.charAt(0))+'</div><div class="poster-name">'+escapeHtml(posterName)+'</div></div>'+
+           '<div class="market-cover"><span class="sampletag">ชุมชน</span>'+objectArt('market')+'</div>'+
            '<div class="market-body"><div><p>'+escapeHtml(l.condition)+'</p><h3>'+escapeHtml(l.title)+'</h3><span class="market-price">'+Number(l.price).toLocaleString('th-TH')+' ฿</span></div>'+
-           '<div><button class="modern-btn secondary" onclick="sellerContact()">ติดต่อผู้ขาย</button>'+
-           '<button class="modern-btn" data-id="'+escapeHtml(l.id)+'" onclick="requestMarketDelivery(this.dataset.id)">ส่งของชิ้นนี้</button></div></div></article>';
-  }).join('')||'<p class="empty">ยังไม่มีประกาศในตลาดตอนนี้</p>';
+           '<div><button class="modern-btn secondary" onclick="alert(\'ติดต่อผู้ขาย\')">ติดต่อผู้ขาย</button>'+
+           '<button class="modern-btn" onclick="requestMarketDelivery(\''+escapeHtml(l.id)+'\')">ส่งของชิ้นนี้</button></div></div></article>';
+  }).join('')||'<p class="empty">ยังไม่มีประกาศในตลาด</p>';
 }
 
-function sellerContact(){document.getElementById('notice').textContent='ติดต่อผู้ขายผ่านระบบแชทชุมชน';}
-
 function listingForm(){
-  document.getElementById('marketForm').innerHTML='<form class="card" id="listingForm"><h3>ลงประกาศขายในชุมชน</h3><p class="muted">ประกาศของคุณจะแสดงพร้อมโปรไฟล์ผู้ลงประกาศ</p><label>ชื่อสินค้า<input name="title" maxlength="80" required></label><label>ราคา (บาท)<input name="price" type="number" min="1" max="1000000" required></label><label>สภาพสินค้า<select name="condition"><option>ของใหม่</option><option>มือสอง สภาพดี</option></select></label><label>รายละเอียด<input name="detail" maxlength="240" required></label><button type="submit" class="modern-btn" style="margin-top:12px;padding:10px">ส่งให้ผู้ดูแลตรวจ</button></form>';
+  document.getElementById('marketForm').innerHTML='<form class="card" id="listingForm"><h3>ลงประกาศขายในชุมชน</h3><label>ชื่อสินค้า<input name="title" required></label><label>ราคา (บาท)<input name="price" type="number" required></label><label>สภาพสินค้า<select name="condition"><option>ของใหม่</option><option>มือสอง สภาพดี</option></select></label><label>รายละเอียด<input name="detail" required></label><button type="submit" class="modern-btn" style="margin-top:12px;padding:10px">บันทึกประกาศ</button></form>';
   document.getElementById('listingForm').onsubmit=e=>{
     e.preventDefault();
     const data=new FormData(e.target);
-    const posterInfo = state.currentUser ? {name: state.currentUser.name, avatar: state.currentUser.avatar} : {name: 'สมาชิกกระนวน', avatar: ''};
     state.listings.push({
       id:'L'+Date.now(), areaId,
       title:String(data.get('title')).trim(),
       price:Number(data.get('price')),
       condition:String(data.get('condition')),
       detail:String(data.get('detail')).trim(),
-      status:'pending', isSample:true,
-      poster: posterInfo
+      status:'approved', isSample:true,
+      poster: { name: state.currentUser?.name || 'สมาชิกกระนวน', avatar: '' }
     });
-    save(); document.getElementById('notice').textContent='ส่งประกาศแล้ว รอผู้ดูแลอนุมัติ';
+    save(); document.getElementById('notice').textContent='ลงประกาศสำเร็จ!';
     document.getElementById('marketForm').innerHTML='';
   }
 }
 
-function pendingListings(){
-  return '<h2 style="margin-top:24px">ประกาศตลาดรอตรวจ</h2>'+state.listings.filter(l=>l.areaId===areaId&&l.status==='pending').map(l=>'<div class="card"><h3>'+escapeHtml(l.title)+'</h3><p>'+escapeHtml(l.detail)+' · '+Number(l.price)+' บาท</p><button data-id="'+escapeHtml(l.id)+'" onclick="reviewListing(this.dataset.id, true)">อนุมัติประกาศ</button> <button data-id="'+escapeHtml(l.id)+'" onclick="reviewListing(this.dataset.id, false)">ไม่อนุมัติ</button></div>').join('')
-}
-
-function reviewListing(id,approve){
-  const l=state.listings.find(l=>l.id===id&&l.areaId===areaId&&l.status==='pending');
-  if(l){l.status=approve?'approved':'rejected';save()}
-}
-
-statuses.seller='รอผู้ขายยืนยันพร้อมส่ง';
-
 function requestMarketDelivery(id){
-  const l=state.listings.find(l=>l.id===id&&l.areaId===areaId&&l.status==='approved');
+  const l=state.listings.find(l=>l.id===id);
   if(!l)return;
   state.orders.push({
     id:Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),
-    areaId, status:'seller', type:'market', item:l.title, itemPrice:l.price, deliveryFee:20,
+    areaId, status:'seller', type:'market', item:l.title, deliveryFee:20,
     coordinates: { pickup: { lat: 16.706, lng: 103.078 }, drop: userLiveLocation, isSample: false }
   });
   go('ออเดอร์ของฉัน'); save();
-  document.getElementById('notice').textContent='สร้างคำขอให้ไรเดอร์รับของจากตลาดเรียบร้อย';
+  document.getElementById('notice').textContent='สร้างคำขอส่งของสำเร็จ';
 }
 
 window.addEventListener('DOMContentLoaded', () => {
