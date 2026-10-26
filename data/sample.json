@@ -1,0 +1,37 @@
+{
+  "isSample": true,
+  "areaId": "khon-kaen-kranuan",
+  "shops": [
+    {
+      "name": "ครัวชุมชน (สมมติ)",
+      "category": "อาหาร",
+      "contact": "ยังไม่มีข้อมูลจริง",
+      "price": 50
+    },
+    {
+      "name": "ช่างใกล้บ้าน (สมมติ)",
+      "category": "บริการ",
+      "contact": "ยังไม่มีข้อมูลจริง"
+    }
+  ],
+  "news": {
+    "title": "กิจกรรมชุมชนตัวอย่าง",
+    "source": "ข้อมูลจำลอง ไม่มีแหล่งข่าวจริง",
+    "status": "pending"
+  },
+  "deliveryFee": 10,
+  "marketListings": [
+    {
+      "id": "market-demo",
+      "areaId": "khon-kaen-kranuan",
+      "title": "โต๊ะไม้สำหรับมุมทำงาน (สมมติ)",
+      "price": 350,
+      "condition": "มือสอง สภาพดี",
+      "detail": "ประกาศตัวอย่างจากคนในพื้นที่",
+      "status": "approved",
+      "isSample": true
+    }
+  ],
+  "marketDeliveryFee": 20,
+  "marketDeliveryFeeIsSample": true
+}
