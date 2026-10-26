@@ -14,7 +14,7 @@
 *{box-sizing:border-box}body{margin:0;background:#18191c;color:#f0f2f5;font:400 14px/1.6 Seed,sans-serif}button,input,select{font:inherit}button,a,input:focus-visible{outline-color:#ed5c5f}button{cursor:pointer}
 .app{max-width:480px;background:#1e2024;min-height:100vh;margin:auto;padding-bottom:90px;position:relative}
 
-/* Topbar: ชื่อทางซ้าย, รูปวงกลมเล็กและสถานะออนไลน์อยู่ขวา */
+/* Topbar: ชื่อซ้าย, รูปวงกลมเล็กและสถานะออนไลน์อยู่ขวา */
 .topbar{padding:14px 16px;background:#25282e;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #32363e}
 .topbar-info strong{font-size:16px;display:block;color:#fff}
 .topbar-info small{display:block;color:#9da4b0;font-size:10px;letter-spacing:.5px}
@@ -32,7 +32,7 @@
 .mapbottom{position:absolute;bottom:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:8px;z-index:1000}
 .mapbottom span{background:rgba(30, 32, 36, 0.9);backdrop-filter:blur(6px);padding:6px 10px;border-radius:8px;font-size:11px;color:#e1e4e8;border:1px solid #3a3f47}
 
-/* พื้นที่เนื้อหาที่ rider.js จะนำมาแสดงผล */
+/* พื้นที่เนื้อหาและสไตล์เดิมที่ rider.js เรียกใช้ */
 .content{padding:18px}
 .sectiontitle{display:flex;justify-content:space-between;align-items:center;margin:5px 0 15px}
 .sectiontitle h1{font-size:20px;margin:0;color:#fff}
@@ -60,14 +60,14 @@ input,select{width:100%;padding:10px;border:1px solid #3a3f47;border-radius:10px
 .pricegrid{display:grid;grid-template-columns:1fr auto;gap:7px;font-size:12px;color:#d1d5db}.pricegrid .total{border-top:1px solid #3a3f47;padding-top:9px;font-weight:700;font-size:17px;color:#ff5252}
 .note{font-size:11px;background:#332a18;color:#ffd54f;padding:11px;border-radius:10px;line-height:1.7;border:1px solid #544322}
 
-/* Navbar เมนูด้านล่างที่ rider.js เรียกใช้ */
+/* Navbar เมนูด้านล่าง */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,480px);display:flex;background:#25282e;border-top:1px solid #32363e;padding:12px 10px 16px;z-index:1000}
 .nav button{flex:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;color:#8a94a2;font-size:10px;cursor:pointer}
 .nav button.active{color:#ef6264;font-weight:bold}
 
 h2{font-size:17px;margin:4px 0 14px;color:#fff}
 details summary{cursor:pointer;font-size:12px;color:#8a94a2}
-#notice:empty{display:none}#notice{font-size:12px;padding:12px;background:#332a18;color:#ffd54f;border-radius:10px}
+#notice:empty{display:none}#notice{font-size:12px;padding:12px;background:#332a18;color:#ffd54f;border-radius:10px;margin-bottom:12px}
 .empty{text-align:center;padding:22px;color:#838994;font-size:13px}
 a{color:#ef6264}
 .switch{margin:12px 0;display:flex;align-items:center;justify-content:space-between}
@@ -83,14 +83,12 @@ a{color:#ef6264}
 .dash-stats button{background:#25282e;border:1px solid #32363e;border-radius:15px;padding:14px 5px;color:#fff}
 .dash-stats strong{display:block;font-size:25px;color:#ef6264}.dash-stats span{font-size:11px;color:#8a94a2}
 .linkbutton{border:0;background:none;color:#ef6264;font-size:12px}
-
-/* ซ่อนแผนที่ SVG สมมติเดิม */
 .map { display: none !important; }
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- Topbar: ชื่อซ้าย, รูปวงกลมเล็กและสถานะออนไลน์อยู่ขวา -->
+  <!-- Topbar: ชื่อขวา รูปวงกลมเล็กและสถานะออนไลน์อยู่ขวา -->
   <header class="topbar">
     <div class="topbar-info">
       <strong>ไรเดอร์กระนวน</strong>
@@ -116,7 +114,7 @@ a{color:#ef6264}
     </div>
   </div>
 
-  <!-- หน้าจอแสดงผลหลักที่จะถูกควบคุมโดย rider.js -->
+  <!-- พื้นที่จะแสดงผลเนื้อหาจาก rider.js (แดชบอร์ด/งานใหม่/ประวัติ) -->
   <main class="content">
     <div id="notice" role="status"></div>
     <div id="screen"></div>
