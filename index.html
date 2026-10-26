@@ -31,6 +31,7 @@ main { animation: fadeIn 0.25s ease-out; }
 .brandline strong{font-size:19px}
 .eyebrow{font-size:10px;letter-spacing:1.5px;font-weight:bold;color:#856342}
 
+/* ปุ่มโปรไฟล์ LINE มุมขวาบน */
 .line-profile-btn{display:flex;align-items:center;gap:8px;background:#fffdf4;border:1px solid #f2c744;padding:4px 10px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:bold;color:#443720}
 .line-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;background:#00b900;display:grid;place-items:center;color:white;font-size:10px}
 
@@ -90,16 +91,16 @@ p{line-height:1.7}
 .modern-btn.secondary{background:#f4ecd9;color:#554838}
 .modern-btn:hover{opacity:0.9}
 
-/* สไตล์ฟอร์มลงประกาศตลาด (ปรับใหม่ให้สวยงาม ไม่เละ มีไอคอนครบ) */
-.market-form-card{background:#ffffff;border:1px solid #eee2d3;border-radius:20px;padding:20px;box-shadow:0 6px 20px rgba(0,0,0,0.03);margin-bottom:18px}
-.form-group{margin-bottom:12px}
-.form-group label{font-size:11px;font-weight:bold;color:#655444;display:block;margin-bottom:4px}
-.form-input-wrap{display:flex;align-items:center;background:#faf5ed;border:1px solid #ebdcc9;border-radius:12px;padding:0 12px;transition:all 0.2s}
+/* สไตล์ฟอร์มลงประกาศตลาด (ปรับใหม่สวยงาม มีไอคอน แป้นพิมพ์ตัวเลข) */
+.market-form-card{background:#ffffff;border:1px solid #eee2d3;border-radius:20px;padding:18px;box-shadow:0 4px 15px rgba(0,0,0,0.03);margin-bottom:16px}
+.form-group{margin-bottom:10px}
+.form-group label{font-size:11px;font-weight:bold;color:#655444;display:block;margin-bottom:3px}
+.form-input-wrap{display:flex;align-items:center;background:#faf5ed;border:1px solid #ebdcc9;border-radius:12px;padding:0 12px}
 .form-input-wrap:focus-within{border-color:#e95e30;background:#fff}
-.form-input-wrap input,.form-input-wrap select{border:0;background:none;width:100%;padding:10px 0;font-size:13px;color:#332e29;outline:none}
+.form-input-wrap input,.form-input-wrap select{border:0;background:none;width:100%;padding:9px 0;font-size:13px;color:#332e29;outline:none}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* สไตล์หน้าส่งของ (ปรับปรุงตามสั่ง) */
+/* สไตล์หน้าส่งของ (อัปเดตใหม่ตามสั่ง) */
 .delivery-container{display:flex;flex-direction:column;gap:14px}
 .delivery-banner{background:linear-gradient(135deg, #2d241e 0%, #483931 100%);color:white;border-radius:20px;padding:18px 20px;box-shadow:0 8px 20px rgba(45,36,30,0.12)}
 .delivery-banner h2{margin:0 0 4px;font-size:18px;color:#fff}
@@ -211,10 +212,10 @@ p{line-height:1.7}
       <summary>ต้นแบบ · ข้อมูลสมมติ / เครื่องมือทดลอง</summary>
       <p class="muted">ยังไม่มีการซื้อขาย ส่งงาน หรือสั่งสินค้าจริง</p>
       <label class="muted">บทบาททดลอง 
-        <select id="role" aria-label="บทบาททดลอง" onclick="go(this.value)">
-          <option>ร้านค้า</option>
+        <select id="role" aria-label="บทบาททดลอง" onchange="go(this.value)">
+          <option value="ร้านค้า">ร้านค้า</option>
           <option value="ร้านรับงาน">ร้าน / ผู้ขายรับงาน</option>
-          <option>ผู้ดูแล</option>
+          <option value="ผู้ดูแล">ผู้ดูแล</option>
         </select>
       </label>
       <button onclick="resetDemo()">ล้างข้อมูลทดลอง</button>
@@ -226,7 +227,7 @@ p{line-height:1.7}
 
 <script src="assets/delivery-pricing.js"></script>
 <script>
-const areaId='khon-kaen-kranuan',key='kranuan-isolated-demo-v5';
+const areaId='khon-kaen-kranuan',key='kranuan-isolated-demo-v6';
 const LINE_LIFF_ID = '2012226697-VvcpgtpW'; 
 
 let state={orders:[],rider:'none',news:false,currentUser:null};
@@ -335,7 +336,7 @@ function advance(id,next){
   o.status=next;save();
 }
 
-/* หน้าส่งของที่อัปเดตตามสั่ง: เพิ่มเลือกตำแหน่ง (ตำแหน่งฉัน / ปักหมุด), รูปของในกล่อง, และ Checkbox ยินยอมนโยบาย */
+/* 1. แก้ไขเฉพาะหน้าส่งของตามสั่ง */
 let selectedLocMode = 'current';
 let insideBoxImageBase64 = '';
 let houseImageBase64 = '';
@@ -355,10 +356,10 @@ function deliveryFormHtml(){
 
       <div class="location-mode-selector">
         <button type="button" class="loc-mode-btn ${selectedLocMode==='current'?'active':''}" onclick="setLocMode('current')">
-          📍 ตำแหน่งปัจจุบันของฉัน
+          📍 ตำแหน่งของฉัน
         </button>
         <button type="button" class="loc-mode-btn ${selectedLocMode==='pin'?'active':''}" onclick="setLocMode('pin')">
-          🗺️ ปักหมุดแผนที่
+          🗺️ ปักหมุดในแผนที่
         </button>
       </div>
 
@@ -375,16 +376,16 @@ function deliveryFormHtml(){
           <div class="loc-dot drop">🎯</div>
           <div class="loc-field">
             <label>จุดส่งของ (ปลายทาง)</label>
-            <input name="dropLoc" required value="${selectedLocMode==='current'?'พิกัด GPS ปัจจุบันในกระนวน':'เลือกจากหมุดแผนที่ (คลิกเพื่อแก้ไข)'}" placeholder="บ้านเลขที่ / จุดสังเกตปลายทาง">
+            <input name="dropLoc" required value="${selectedLocMode==='current'?'ตำแหน่งปัจจุบันของฉัน (GPS)':'พิกัดจากการปักหมุด'}" placeholder="บ้านเลขที่ / จุดสังเกตปลายทาง">
           </div>
         </div>
       </div>
 
       <div style="margin-top:14px">
-        <div class="section-title-deliv" style="font-size:12px;margin-bottom:6px">📦 รายละเอียดพัสดุ & ภาพถ่ายด้านใน</div>
+        <div class="section-title-deliv" style="font-size:12px;margin-bottom:6px">📦 รายละเอียดพัสดุ & ถ่ายภาพสิ่งของ</div>
         <div class="loc-field" style="margin-bottom:8px">
-          <label>ชื่อสิ่งของ / ประเภท</label>
-          <input name="itemDesc" required placeholder="เช่น เอกสาร, พัสดุ, อาหาร">
+          <label>สิ่งของในกล่อง / ประเภท</label>
+          <input name="itemDesc" required placeholder="เช่น เอกสาร, กล่องพัสดุ, อาหาร">
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
@@ -395,7 +396,7 @@ function deliveryFormHtml(){
           </div>
 
           <div class="upload-box" onclick="document.getElementById('houseImageInput').click()">
-            <div style="font-size:11px;font-weight:bold;color:#8a7b6b" id="uploadHouseText">🏡 รูปถ่ายหน้าบ้าน</div>
+            <div style="font-size:11px;font-weight:bold;color:#8a7b6b" id="uploadHouseText">🏡 แนบรูปหน้าบ้าน</div>
             <input type="file" id="houseImageInput" accept="image/*" style="display:none" onchange="previewHouseImage(event)">
             <img id="housePreview" class="upload-preview" alt="House">
           </div>
@@ -407,12 +408,12 @@ function deliveryFormHtml(){
         </div>
       </div>
 
-      <!-- นโยบายและความยินยอม -->
+      <!-- นโยบายความยินยอมถ่ายรูปสิ่งของในกล่อง -->
       <div class="policy-box">
         <input type="checkbox" id="policyConsent" required onchange="toggleSubmitButton()">
         <label for="policyConsent">
-          <strong>ยินยอมเปิดเผยภาพถ่ายสิ่งของด้านใน</strong> และอนุญาตให้ตรวจสอบสภาพพัสดุก่อนจัดส่ง 
-          <br><span style="color:#a8998a;font-size:9px;">* นโยบายของเรา: เพื่อป้องกันการส่งสิ่งของผิดกฎหมายและยาเสพติดอย่างเคร่งครัด หากพบการละเมิดจะดำเนินคดีตามกฎหมายทันที</span>
+          <strong>ยินยอมเปิดเผยถ่ายภาพสิ่งของด้านใน</strong> และอนุญาตให้ไรเดอร์ตรวจสอบสภาพพัสดุก่อนจัดส่ง 
+          <br><span style="color:#9e8d7c;font-size:9px;">* นโยบายของเรา: เพื่อป้องกันการส่งสิ่งของผิดกฎหมายและสารเสพติดอย่างเคร่งครัด</span>
         </label>
       </div>
 
@@ -436,7 +437,6 @@ function toggleSubmitButton(){
   }
 }
 
-let insideBoxImageBase64 = '';
 function previewInsideBox(event){
   const file = event.target.files[0];
   if(file){
@@ -452,7 +452,6 @@ function previewInsideBox(event){
   }
 }
 
-let houseImageBase64 = '';
 function previewHouseImage(event){
   const file = event.target.files[0];
   if(file){
@@ -489,11 +488,11 @@ function submitRealDelivery(e){
   document.getElementById('notice').textContent='สร้างงานส่งของเรียบร้อย! ไรเดอร์กำลังเตรียมมารับสิ่งของ';
 }
 
-/* หน้าตลาดที่อัปเดตฟอร์มลงประกาศใหม่ให้สวยงาม ไม่เละ พร้อมแป้นพิมพ์ตัวเลขสำหรับเบอร์โทร */
+/* 2. แก้ไขเฉพาะฟอร์มลงประกาศหน้าตลาดตามสั่ง */
 function listingForm(){
   document.getElementById('marketForm').innerHTML=`
     <form class="market-form-card" id="listingForm">
-      <h3 style="margin:0 0 14px;font-size:16px;display:flex;align-items:center;gap:6px">📦 ลงประกาศขายในชุมชน</h3>
+      <h3 style="margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:6px;color:#332e29">📦 ลงประกาศขายในชุมชน</h3>
       
       <div class="form-group">
         <label>🏷️ ชื่อสินค้า / รายการ</label>
@@ -506,36 +505,35 @@ function listingForm(){
         <div class="form-group">
           <label>💰 ราคา (บาท)</label>
           <div class="form-input-wrap">
-            <input name="price" type="number" required placeholder="0.00">
+            <input name="price" type="number" required placeholder="0">
           </div>
         </div>
         <div class="form-group">
           <label>⭐ สภาพสินค้า</label>
           <div class="form-input-wrap">
             <select name="condition">
-              <option>ของใหม่มือ 1</option>
+              <option>ของใหม่</option>
               <option>มือสอง สภาพดี</option>
-              <option>สินค้าชุมชน/ท้องถิ่น</option>
             </select>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <label>📞 เบอร์โทรศัพท์ติดต่อ (สำหรับผู้ซื้อ)</label>
+        <label>📞 เบอร์โทรศัพท์ติดต่อ</label>
         <div class="form-input-wrap">
           <input name="phone" type="tel" inputmode="numeric" pattern="[0-9]*" required placeholder="เช่น 0812345678">
         </div>
       </div>
 
       <div class="form-group">
-        <label>📝 รายละเอียดเพิ่มเติม</label>
+        <label>📝 รายละเอียดสินค้า</label>
         <div class="form-input-wrap">
-          <input name="detail" required placeholder="ระบุรายละเอียด ตำแหน่งรับของ หรือเงื่อนไข">
+          <input name="detail" required placeholder="เช่น ประกาศตัวอย่างจากคนในพื้นที่">
         </div>
       </div>
 
-      <button type="submit" class="modern-btn" style="padding:12px;font-size:13px;margin-top:6px">✨ บันทึกและเผยแพร่ประกาศ</button>
+      <button type="submit" class="modern-btn" style="padding:11px;font-size:13px;margin-top:6px">บันทึกประกาศ</button>
     </form>`;
   
   document.getElementById('listingForm').onsubmit=e=>{
@@ -549,9 +547,9 @@ function listingForm(){
       phone:String(data.get('phone')).trim(),
       detail:String(data.get('detail')).trim(),
       status:'approved', isSample:true,
-      poster: { name: state.currentUser?.name || 'สมาชิกกระนวน', avatar: '' }
+      poster: { name: state.currentUser?.name || 'คนในชุมชน', avatar: '' }
     });
-    save(); document.getElementById('notice').textContent='ลงประกาศในตลาดสำเร็จ!';
+    save(); document.getElementById('notice').textContent='ลงประกาศสำเร็จ!';
     document.getElementById('marketForm').innerHTML='';
   }
 }
@@ -677,7 +675,7 @@ function render(){
   appEl.innerHTML=h;
   topNav();
   if(view==='ร้านค้า')results();
-  if(view==='ตลาด')marketResults()
+  if(view==='ตลาด')marketResults();
 }
 
 function categoryBar(){
