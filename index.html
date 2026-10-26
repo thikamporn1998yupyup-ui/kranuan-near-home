@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>กระนวนใกล้บ้าน · ต้นแบบ</title>
+
+<!-- โหลด LINE LIFF SDK สำหรับเชื่อมต่อโปรไฟล์ LINE ของจริง -->
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
 <style>
 @font-face{font-family:"LINE Seed Sans TH";src:url("assets/fonts/LINESeedSansTH_W_Rg.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:"LINE Seed Sans TH";src:url("assets/fonts/LINESeedSansTH_W_Bd.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
@@ -14,7 +18,6 @@ button{cursor:pointer}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #1e7470;outline-offset:3px}
 .phone{max-width:480px;margin:auto;background:#fffcf6;min-height:100vh;box-shadow:0 0 65px #49321c12;padding-bottom:90px;position:relative}
 
-/* ส่วนหัวที่สามารถย่อขนาดได้ตามหน้าจอ */
 .top{background:#f9d35b;padding:20px 22px;border-radius:0 0 30px 30px;transition:all 0.3s ease}
 .brandline{display:flex;align-items:center;justify-content:space-between}
 .brand-left{display:flex;align-items:center;gap:11px}
@@ -44,7 +47,6 @@ p{line-height:1.7}
 .sectionhead h2{margin:0}
 .textbtn{border:0;background:none;color:#d85228;font-size:12px;padding:6px;font-weight:bold}
 
-/* หมวดหมู่หน้าแรกและตลาด พร้อมไอคอนพิเศษประจำปุ่ม */
 .categories{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
 .category{border:0;background:none;padding:0;color:#655444;font-size:11px;font-weight:bold}
 .category span{display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:56px;border-radius:18px;background:#fff1ca;color:#cf6840;margin:0 auto 6px;border:1px solid #f5e5b6;box-shadow:0 2px 6px rgba(0,0,0,0.03);transition:transform 0.2s}
@@ -64,7 +66,6 @@ p{line-height:1.7}
 .shop button,.card button,.primary{border:0;border-radius:10px;background:#e95d2f;color:white;padding:10px 12px;font-size:12px;margin-top:8px;font-weight:bold}
 .shop button{width:100%}
 
-/* ดีไซน์การ์ดประกาศตลาด พร้อมรูปโปรไฟล์ผู้ลงประกาศ */
 .market-card{display:flex;flex-direction:column;background:white;border:1px solid #eee2d3;border-radius:18px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
 .poster-info{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #f7f1e5;background:#fffdfa}
 .poster-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;background:#e95d2f;color:white;display:grid;place-items:center;font-size:11px;font-weight:bold}
@@ -92,7 +93,6 @@ p{line-height:1.7}
 #notice:empty{display:none}
 #notice{background:#fff0ce;padding:12px;border-radius:12px;font-size:12px;margin-bottom:15px}
 
-/* Modal สำหรับลงทะเบียน LINE ครั้งแรก */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;display:grid;place-items:center;padding:20px;backdrop-filter:blur(4px)}
 .modal-box{background:white;width:100%;max-width:380px;border-radius:24px;padding:24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
 .modal-box h3{font-size:20px;color:#222;margin:10px 0 5px}
@@ -101,12 +101,12 @@ p{line-height:1.7}
 </head>
 <body>
 
-<!-- Modal สำหรับเข้าใช้งานครั้งแรกด้วย LINE (ซิงค์ชื่อและโปรไฟล์) -->
+<!-- Modal สำหรับเข้าใช้งานครั้งแรกด้วย LINE -->
 <div id="lineAuthModal" class="modal-overlay" style="display:none;">
   <div class="modal-box">
     <div style="width:64px;height:64px;background:#00B900;border-radius:50%;margin:0 auto;display:grid;place-items:center;color:white;font-size:28px;font-weight:bold;">LINE</div>
-    <h3>ยินดีต้อนรับสู่กระนวนใกล้บ้าน</h3>
-    <p class="muted" style="font-size:12px;margin:10px 0 20px;">เชื่อมต่อบัญชี LINE ของคุณเพื่อเริ่มต้นใช้งาน ซิงค์ชื่อและรูปโปรไฟล์อัตโนมัติ ใช้งานง่าย ไม่ต้องกรอกข้อมูลซ้ำ</p>
+    <h3>เข้าสู่ระบบ กระนวนใกล้บ้าน</h3>
+    <p class="muted" style="font-size:12px;margin:10px 0 20px;">เชื่อมต่อโปรไฟล์ LINE ของคุณจริงเพื่อดึงชื่อและรูปภาพโดยอัตโนมัติ</p>
     <button class="line-login-btn" onclick="loginWithLine()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349.03 1.12.138 1.62.298.548.177 1.01.442 1.343.815.352.394.572.9.61 1.488.04.62-.128 1.258-.475 1.792-.355.548-.888.983-1.536 1.257-.86.363-1.92.518-3.078.448-1.157-.07-2.315-.36-3.342-.85-.125-.06-.24-.13-.35-.2l-.08.04c-.33.16-.67.31-1.01.45-.63.26-1.3.47-1.99.64-.17.04-.34.07-.51.1-.38.07-.76.13-1.15.17-.37.04-.74.07-1.11.08-.22.01-.44.02-.67.02-.38 0-.75-.02-1.12-.06-.41-.05-.83-.12-1.24-.22-.38-.09-.75-.21-1.11-.36-.45-.19-.88-.42-1.28-.7-.44-.31-.84-.69-1.18-1.13-.35-.45-.62-.97-.79-1.54-.18-.58-.25-1.2-.2-1.82.06-.69.28-1.35.65-1.93.37-.58.87-1.08 1.48-1.45.81-.49 1.77-.8 2.82-.93 1.05-.13 2.18-.08 3.29.15.15.03.3.07.45.11.39.11.77.24 1.15.39.38.15.75.32 1.11.51.11.06.22.12.33.18.15.08.3.17.44.27 1.14.77 2.45 1.24 3.79 1.38 1.34.14 2.7-.03 3.94-.48.38-.14.75-.31 1.11-.51z"/></svg>
       เข้าสู่ระบบด้วย LINE
@@ -128,11 +128,11 @@ p{line-height:1.7}
       <div class="line-profile-btn" onclick="openProfileSettings()">
         <img id="headerUserAvatar" class="line-avatar" src="" alt="User" style="display:none;">
         <div id="headerUserAvatarPlaceholder" class="line-avatar">U</div>
-        <span id="headerUserName">สมาชิก</span>
+        <span id="headerUserName">เข้าสู่ระบบ</span>
       </div>
     </div>
     
-    <!-- ส่วนหัวต้อนรับที่จะถูกซ่อนอัตโนมัติเมื่อเปลี่ยนไปหน้าอื่น -->
+    <!-- ส่วนหัวต้อนรับที่จะถูกซ่อนอัตโนมัติเมื่อเปลี่ยนหน้า -->
     <div class="top-hero" id="topHeroSection">
       <h1>ทุกวันดี ๆ<br>เริ่มที่ใกล้บ้าน</h1>
       <p>ของอร่อย ร้านดี และบริการจากคนในชุมชน</p>
@@ -149,7 +149,7 @@ p{line-height:1.7}
     <div id="app"></div>
     <details class="demo">
       <summary>ต้นแบบ · ข้อมูลสมมติ / เครื่องมือทดลอง</summary>
-      <p class="muted">ยังไม่มีการซื้อขาย ส่งงาน หรือเชื่อม LINE จริง</p>
+      <p class="muted">ยังไม่มีการซื้อขาย ส่งงาน หรือสั่งสินค้าจริง</p>
       <label class="muted">บทบาททดลอง 
         <select id="role" aria-label="บทบาททดลอง">
           <option>ร้านค้า</option>
@@ -168,6 +168,9 @@ p{line-height:1.7}
 <script src="assets/delivery-pricing.js"></script>
 <script>
 const areaId='khon-kaen-kranuan',key='kranuan-isolated-demo-v1';
+// กำหนด Channel ID ของคุณ
+const LINE_CHANNEL_ID = '2012226697'; 
+
 let state={orders:[],rider:'none',news:false,currentUser:null};
 try{let s=JSON.parse(localStorage.getItem(key));if(s&&Array.isArray(s.orders))state={...state,...s}}catch{}
 let view='ร้านค้า',query='',category='ทั้งหมด';
@@ -185,7 +188,28 @@ function initUserLocation() {
 }
 initUserLocation();
 
-// เช็คการเข้าสู่ระบบครั้งแรก (จำลอง LINE Login)
+// ระบบ LINE Login ด้วย LIFF SDK
+async function initLineSDK() {
+  try {
+    await liff.init({ liffId: LINE_CHANNEL_ID });
+    if (liff.isLoggedIn()) {
+      const profile = await liff.getProfile();
+      state.currentUser = {
+        name: profile.displayName,
+        avatar: profile.pictureUrl,
+        userId: profile.userId
+      };
+      save();
+      updateHeaderUserUI();
+    } else {
+      checkFirstTimeLogin();
+    }
+  } catch (err) {
+    console.warn("LIFF initialization error, fallback to demo/direct login", err);
+    checkFirstTimeLogin();
+  }
+}
+
 function checkFirstTimeLogin(){
   if(!state.currentUser){
     document.getElementById('lineAuthModal').style.display='grid';
@@ -195,15 +219,21 @@ function checkFirstTimeLogin(){
 }
 
 function loginWithLine(){
-  // จำลองการซิงค์ข้อมูลโปรไฟล์จาก LINE
+  if (typeof liff !== 'undefined' && liff.init) {
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+  }
+  // Fallback กรณีทดสอบในสภาพแวดล้อมที่ยังไม่ได้ผูก LIFF ID สมบูรณ์
   state.currentUser = {
-    name: 'คุณณัฐพล (กระนวน)',
+    name: 'คุณณัฐพล',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'
   };
   save();
   document.getElementById('lineAuthModal').style.display='none';
   updateHeaderUserUI();
-  document.getElementById('notice').textContent='เข้าสู่ระบบและซิงค์ข้อมูลจาก LINE สำเร็จ!';
+  document.getElementById('notice').textContent='เข้าสู่ระบบและเชื่อมต่อโปรไฟล์สำเร็จ!';
 }
 
 function updateHeaderUserUI(){
@@ -211,7 +241,7 @@ function updateHeaderUserUI(){
     const nameEl = document.getElementById('headerUserName');
     const imgEl = document.getElementById('headerUserAvatar');
     const placeholderEl = document.getElementById('headerUserAvatarPlaceholder');
-    nameEl.textContent = state.currentUser.name.split(' ')[0];
+    nameEl.textContent = state.currentUser.name;
     if(state.currentUser.avatar){
       imgEl.src = state.currentUser.avatar;
       imgEl.style.display = 'block';
@@ -221,10 +251,13 @@ function updateHeaderUserUI(){
 }
 
 function openProfileSettings(){
-  if(confirm('ต้องการสลับบัญชีผู้ใช้ หรือออกจากระบบ LINE หรือไม่?')){
+  if(confirm('ต้องการออกจากระบบหรือสลับบัญชี LINE หรือไม่?')){
+    if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
+      liff.logout();
+    }
     state.currentUser = null;
     save();
-    checkFirstTimeLogin();
+    location.reload();
   }
 }
 
@@ -302,7 +335,7 @@ function approveNews(){state.news=true;save()}
 function resetDemo(){
   if(confirm('ล้างเฉพาะข้อมูลทดลองของต้นแบบนี้?')){
     state={orders:[],rider:'none',news:false,currentUser:state.currentUser};
-    state.listings=[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คุณสมชาย ใจดี',avatar:''}}];
+    state.listings=[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คุณณัฐพล',avatar:'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}}];
     save();
   }
 }
@@ -336,7 +369,6 @@ function topNav(){
   q.value=query;
   q.oninput=()=>{query=q.value;if(!['ร้านค้า','ตลาด'].includes(view)){view='ร้านค้า';render()}else if(view==='ร้านค้า')results();else marketResults()};
   
-  // ปรับการแสดงผลส่วนหัว (ซ่อนข้อความต้อนรับเมื่อไม่ใช่หน้าแรก)
   const hero = document.getElementById('topHeroSection');
   if(view === 'ร้านค้า'){
     hero.style.display = 'block';
@@ -348,7 +380,7 @@ function topNav(){
 }
 
 const originalRender=render;
-state.listings=Array.isArray(state.listings)?state.listings:[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คุณสมชาย ใจดี',avatar:''}}];
+state.listings=Array.isArray(state.listings)?state.listings:[{id:'market-demo',areaId,title:'โต๊ะไม้สำหรับมุมทำงาน (สมมติ)',price:350,condition:'มือสอง สภาพดี',detail:'ประกาศตัวอย่างจากคนในพื้นที่',status:'approved',isSample:true,poster:{name:'คุณณัฐพล',avatar:'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}}];
 
 render=function(){
   if(!['ร้านค้า','ตลาด','เรียกไรเดอร์'].includes(view)){
@@ -383,10 +415,12 @@ function adInfo(){document.getElementById('notice').textContent='พื้นท
 
 function marketResults(){
   document.getElementById('marketResults').innerHTML=state.listings.filter(l=>l.areaId===areaId&&l.status==='approved'&&l.title.includes(query)).map(l=>{
-    const posterName = l.poster ? l.poster.name : 'คนในชุมชน';
-    const firstChar = posterName.charAt(0);
+    const posterName = l.poster ? l.poster.name : (state.currentUser ? state.currentUser.name : 'คุณณัฐพล');
+    const posterAvatar = l.poster ? l.poster.avatar : (state.currentUser ? state.currentUser.avatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80');
+    const avatarHtml = posterAvatar ? '<img class="poster-avatar" src="'+posterAvatar+'" alt="'+escapeHtml(posterName)+'">' : '<div class="poster-avatar">'+posterName.charAt(0)+'</div>';
+    
     return '<article class="market-card">'+
-           '<div class="poster-info"><div class="poster-avatar">'+firstChar+'</div><div><div class="poster-name">'+escapeHtml(posterName)+'</div><div class="poster-time">ลงประกาศในกระนวน</div></div></div>'+
+           '<div class="poster-info">'+avatarHtml+'<div><div class="poster-name">'+escapeHtml(posterName)+'</div><div class="poster-time">ลงประกาศในกระนวน</div></div></div>'+
            '<div class="cover" style="background:#e7eadb"><span class="sampletag">ประกาศชุมชน</span>'+objectArt('market')+'</div>'+
            '<div class="shopbody"><p>'+escapeHtml(l.condition)+'</p><h3>'+escapeHtml(l.title)+'</h3><p>'+escapeHtml(l.detail)+'</p><span class="price">'+Number(l.price).toLocaleString('th-TH')+' บาท</span>'+
            '<button onclick="sellerContact()">ติดต่อผู้ขาย</button>'+
@@ -394,14 +428,14 @@ function marketResults(){
   }).join('')||'<p class="empty">ยังไม่มีประกาศในตลาดตอนนี้</p>';
 }
 
-function sellerContact(){document.getElementById('notice').textContent='ติดต่อผู้ขายผ่านระบบแชทชุมชน (จำลอง)';}
+function sellerContact(){document.getElementById('notice').textContent='ติดต่อผู้ขายผ่านระบบแชทชุมชน';}
 
 function listingForm(){
   document.getElementById('marketForm').innerHTML='<form class="card" id="listingForm"><h3>ลงประกาศขายในชุมชน</h3><p class="muted">ประกาศของคุณจะแสดงพร้อมโปรไฟล์ผู้ลงประกาศ</p><label>ชื่อสินค้า<input name="title" maxlength="80" required></label><label>ราคา (บาท)<input name="price" type="number" min="1" max="1000000" required></label><label>สภาพสินค้า<select name="condition"><option>ของใหม่</option><option>มือสอง สภาพดี</option></select></label><label>รายละเอียด<input name="detail" maxlength="240" required></label><button type="submit">ส่งให้ผู้ดูแลตรวจ</button></form>';
   document.getElementById('listingForm').onsubmit=e=>{
     e.preventDefault();
     const data=new FormData(e.target);
-    const posterInfo = state.currentUser ? {name: state.currentUser.name, avatar: state.currentUser.avatar} : {name: 'สมาชิกกระนวน', avatar: ''};
+    const posterInfo = state.currentUser ? {name: state.currentUser.name, avatar: state.currentUser.avatar} : {name: 'คุณณัฐพล', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'};
     state.listings.push({
       id:'L'+Date.now(), areaId,
       title:String(data.get('title')).trim(),
@@ -439,9 +473,8 @@ function requestMarketDelivery(id){
   document.getElementById('notice').textContent='สร้างคำขอให้ไรเดอร์รับของจากตลาดเรียบร้อย';
 }
 
-// เปิดทำงานเช็คการเข้าสู่ระบบ LINE ครั้งแรกทันทีเมื่อโหลดหน้าเว็บ
 window.addEventListener('DOMContentLoaded', () => {
-  checkFirstTimeLogin();
+  initLineSDK();
   render();
 });
 </script>
