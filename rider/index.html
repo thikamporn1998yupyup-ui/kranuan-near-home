@@ -22,8 +22,8 @@
 .online i{width:7px;height:7px;border-radius:50%;background:#9caaa2}
 .online i.on{background:#2d9d70}
 
-/* ส่วนแผนที่ตำแหน่งปัจจุบันขนาดใหญ่ตรงกลาง */
-.map{height:280px;position:relative;background:#e7ece9;overflow:hidden;border-bottom:1px solid #e8eaee}
+/* บังคับให้แผนที่แสดงผลตรงกลางตลอดเวลา ไม่ให้สคริปต์อื่นมาซ่อน */
+.map{height:280px;position:relative;background:#e7ece9;overflow:hidden;border-bottom:1px solid #e8eaee;display:block !important;}
 .map svg{width:100%;height:100%}
 .maplabel{position:absolute;left:16px;top:12px;background:#fffdf4ed;padding:5px 9px;border-radius:7px;font-size:10px;color:#7d7052}
 .mapbottom{position:absolute;bottom:14px;left:16px;right:16px;display:flex;justify-content:space-between;gap:6px}
@@ -75,7 +75,6 @@ a{color:#d3575c}
 .dash-stats button{background:white;border:1px solid #e7e9ed;border-radius:15px;padding:14px 5px;color:#313a48}
 .dash-stats strong{display:block;font-size:25px}.dash-stats span{font-size:11px;color:#87909d}
 .linkbutton{border:0;background:none;color:#d6535a;font-size:12px}
-.map[hidden]{display:none}
 .app{--r-bg:#f8f9fb;--r-panel:#fff;--r-ink:#253041;--r-muted:#758090;--r-accent:#ef6264;--r-accent-ink:#fff;background:var(--r-bg);color:var(--r-ink)}
 .topbar,.card,.nav,.nav button,.dash-stats button,input,select{background:var(--r-panel);color:var(--r-ink)}
 .nav button{color:var(--r-muted)}.muted,.topbar small{color:var(--r-muted)}
@@ -110,7 +109,7 @@ a{color:#d3575c}
     <div class="online" id="onlineBadge"></div>
   </header>
 
-  <!-- แผนที่ตำแหน่งปัจจุบันขนาดใหญ่ตรงกลาง (แสดงตลอดเวลา ไม่ซ่อนแล้ว) -->
+  <!-- แผนที่ตำแหน่งปัจจุบันขนาดใหญ่ตรงกลาง (บังคับแสดงตลอดเวลา) -->
   <section class="map" aria-label="ผังตำแหน่งปัจจุบันของไรเดอร์">
     <svg viewBox="0 0 480 270" preserveAspectRatio="xMidYMid slice">
       <rect width="480" height="270" fill="#e8eee9"/>
