@@ -10,7 +10,7 @@
 *{box-sizing:border-box}body{margin:0;background:#eef0f1;color:#232934;font:400 14px/1.6 Seed,sans-serif}button,input,select{font:inherit}button,a,input:focus-visible{outline-color:#ed5c5f}button{cursor:pointer}
 .app{max-width:480px;background:#f9fafb;min-height:100vh;margin:auto;padding-bottom:85px}
 
-/* แถบบนสุด พร้อมรูปโปรไฟล์ไรเดอร์ขนาดเล็กที่มุมบน */
+/* แถบบนสุด: รูปโปรไฟล์ไรเดอร์ขนาดเล็ก + ชื่อ + สถานะออนไลน์ */
 .topbar{padding:12px 16px;background:white;display:flex;align-items:center;gap:10px;border-bottom:1px solid #eee}
 .rider-mini-avatar{width:36px;height:36px;border-radius:50%;overflow:hidden;background:#fce7e5;display:grid;place-items:center;flex-shrink:0}
 .rider-mini-avatar img, .rider-mini-avatar svg{width:100%;height:100%;object-fit:cover}
@@ -22,8 +22,8 @@
 .online i{width:7px;height:7px;border-radius:50%;background:#9caaa2}
 .online i.on{background:#2d9d70}
 
-/* ส่วนแผนที่ตรงกลางขนาดใหญ่ */
-.map{height:320px;position:relative;background:#e7ece9;overflow:hidden;border-bottom:1px solid #e8eaee}
+/* ส่วนแผนที่ตำแหน่งปัจจุบันขนาดใหญ่ตรงกลาง */
+.map{height:280px;position:relative;background:#e7ece9;overflow:hidden;border-bottom:1px solid #e8eaee}
 .map svg{width:100%;height:100%}
 .maplabel{position:absolute;left:16px;top:12px;background:#fffdf4ed;padding:5px 9px;border-radius:7px;font-size:10px;color:#7d7052}
 .mapbottom{position:absolute;bottom:14px;left:16px;right:16px;display:flex;justify-content:space-between;gap:6px}
@@ -98,7 +98,7 @@ a{color:#d3575c}
 </head>
 <body>
 <div class="app">
-  <!-- แถบบนสุด: รูปไรเดอร์ขนาดเล็ก + ชื่อ + สถานะออนไลน์ -->
+  <!-- แถบบนสุด: รูปโปรไฟล์ไรเดอร์ขนาดเล็ก + ชื่อ + สถานะออนไลน์ -->
   <header class="topbar">
     <div class="rider-mini-avatar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
@@ -110,7 +110,7 @@ a{color:#d3575c}
     <div class="online" id="onlineBadge"></div>
   </header>
 
-  <!-- แผนที่ตำแหน่งปัจจุบันขนาดใหญ่ตรงกลาง -->
+  <!-- แผนที่ตำแหน่งปัจจุบันขนาดใหญ่ตรงกลาง (แสดงตลอดเวลา ไม่ซ่อนแล้ว) -->
   <section class="map" aria-label="ผังตำแหน่งปัจจุบันของไรเดอร์">
     <svg viewBox="0 0 480 270" preserveAspectRatio="xMidYMid slice">
       <rect width="480" height="270" fill="#e8eee9"/>
