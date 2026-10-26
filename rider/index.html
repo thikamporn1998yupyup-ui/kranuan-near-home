@@ -123,6 +123,18 @@ textarea{width:100%;padding:10px;border:1px solid var(--ln2);border-radius:10px;
 .starlbl{text-align:center;font-size:13px;color:var(--tx2);margin-bottom:8px}
 @media(prefers-reduced-motion:reduce){.shpanel{animation:none}}
 @media(min-width:650px){.app{margin:20px auto;border-radius:27px;overflow:hidden}}
+
+/* กล่องงานเข้ากลางจอ ใช้สีธีมเดิม */
+#alert{inset:0;transform:none;width:100%;height:100%;height:100dvh;padding:16px;display:flex;align-items:center;justify-content:center;background:rgba(8,10,13,.76);backdrop-filter:blur(5px);overscroll-behavior:contain}
+#alert:empty{display:none}.alertcard{width:min(100%,456px);max-height:100%;display:flex;flex-direction:column;padding:0;overflow:hidden;border-radius:24px;box-shadow:0 24px 80px #0008,0 0 0 4px rgba(var(--rgb),.12);animation:jobIn .25s ease-out}.alertscroll{overflow:auto;min-height:0;overscroll-behavior:contain}
+.alerthead{padding:16px 18px 12px;display:flex;align-items:center;gap:10px}.alerthead .avatar{width:40px;height:40px;border-radius:13px}.alertheading{min-width:0;flex:1}.alertheading h2{font-size:21px;line-height:1.3;margin:0}.alertheading small{font-size:11px;color:var(--tx2)}.alertfee{text-align:right;flex:none}.alertfee small{display:block;font-size:10px;color:var(--tx2)}.alertfee strong{font-size:30px;color:var(--ac2);line-height:1.2}
+.alertphoto{position:relative;margin:0 12px;aspect-ratio:16/9;background:var(--s2);border-radius:16px;overflow:hidden;border:1px solid var(--ln)}.alertphoto img{display:block;width:100%;height:100%;object-fit:cover}.alertphoto figcaption{position:absolute;inset:auto 0 0;padding:30px 14px 12px;background:linear-gradient(transparent,#000c);color:white;font-size:17px;font-weight:700;overflow-wrap:anywhere}.photochip{position:absolute;top:10px;left:10px;padding:3px 9px;border-radius:8px;background:#16191cbb;color:#fff;font-size:10px}
+.alertbody{padding:14px 18px 0}.admincheer{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}.adminav{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(var(--rgb),.15);color:var(--ac2);flex:none}.adminbubble{flex:1;min-width:0;background:var(--s2);border:1px solid var(--ln2);border-radius:0 16px 16px 16px;padding:10px 13px}.adminbubble small{display:block;font-size:10px;color:var(--tx2)}.adminbubble p{font-size:18px;font-weight:700;line-height:1.5;margin:3px 0 0;color:var(--tx);overflow-wrap:anywhere}.alertbody .timeline{margin:10px 0 14px}.alertbody .stop{font-size:14px;padding-bottom:12px;overflow-wrap:anywhere}.alertbody .stop:last-child{padding-bottom:0}.alertbody .stop small{font-size:11px}
+.alertfooter{flex:none;padding:12px 18px 16px;background:var(--s1);border-top:1px solid var(--ln)}.alertfooter .row{display:grid;grid-template-columns:1fr 1.7fr}.alertfooter button{min-height:52px;font-size:16px}.alertfooter p{margin:8px 0 0;font-size:10px;color:var(--tx2);text-align:center}.alertclock{display:flex;justify-content:space-between;font-size:11px;color:var(--tx2);margin-bottom:8px}.alertclock strong{color:var(--ac2)}.alertbar{margin:9px 0 0;height:4px}.alertbar i{animation:none;width:100%;transition:width .2s linear}
+@keyframes jobIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+@media(max-height:650px){.alertphoto{aspect-ratio:2.5}.alerthead{padding:10px 14px}.alertbody{padding:10px 14px 0}.admincheer{margin-bottom:8px}.adminbubble p{font-size:16px}.alertfooter{padding:10px 14px}.alertheading h2{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.alertcard{animation:none}.alertbar i{transition:none}}
+
 </style>
 </head>
 <body>
@@ -169,7 +181,7 @@ textarea{width:100%;padding:10px;border:1px solid var(--ln2);border-radius:10px;
   <nav class="nav" id="nav"></nav>
   <div id="jobbar"></div>
   <div id="sheet" role="dialog" aria-modal="true"></div>
-  <div id="alert" role="alertdialog" aria-live="assertive"></div>
+  <div id="alert" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" aria-describedby="alertCheer"></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -361,9 +373,9 @@ const need=id=>jobs.find(j=>j.id===id);
 const actions={
   async toggle(){online=!online;if(online&&window.Notification&&Notification.permission==='default')try{Notification.requestPermission()}catch(e){}await DB.presence(online);toast(online?'เปิดรับงานแล้ว':'ปิดรับงานแล้ว')},
   async accept(id){
-    if(!online)return toast('เปิดสถานะออนไลน์ก่อนรับงาน');
-    if(active())return toast('ส่งงานปัจจุบันให้เสร็จก่อนรับงานใหม่');
-    if(await DB.claim(id)){tab='home';toast('รับงานแล้ว')}else toast('งานนี้ถูกไรเดอร์คนอื่นรับไปแล้ว');
+    if(!online){toast('เปิดสถานะออนไลน์ก่อนรับงาน');return false}
+    if(active()){toast('ส่งงานปัจจุบันให้เสร็จก่อนรับงานใหม่');return false}
+    if(await DB.claim(id)){tab='home';toast('รับงานแล้ว');return true}else{toast('งานนี้ถูกไรเดอร์คนอื่นรับไปแล้ว');return false}
   },
   async picked(id){await DB.patch(id,{status:'picked'});toast('บันทึกว่ารับของแล้ว')},
   async delivered(id){await DB.patch(id,{status:'delivered',delivered_at:new Date().toISOString()});toast('ส่งสำเร็จ รายได้ถูกบันทึกแล้ว');sh={t:'rate',job:id,f:{stars:5,detail:'',reason:'',alsoBlock:false},msg:''}},
@@ -389,32 +401,150 @@ const actions={
     const u='https://www.google.com/maps/search/?api=1&query='+pos.lat+','+pos.lng,t='ตำแหน่งของฉัน (ไรเดอร์กระนวน)';
     try{if(navigator.share)await navigator.share({title:t,text:t,url:u});else{await navigator.clipboard.writeText(u);sh.msg='คัดลอกลิงก์ตำแหน่งแล้ว นำไปวางส่งให้คนที่ไว้ใจได้'}}catch(e){}},
   async unblock(id){prof.blocked=prof.blocked.filter(b=>b.id!==id);await DB.saveProfile(prof)},
-  async takeAlert(){const j=cur;if(!j)return;if(j.id==='TEST'){nextAlert();return toast('นี่คือการทดสอบ ระบบแจ้งเตือนทำงานปกติ')}await actions.accept(j.id);nextAlert()}
+  async takeAlert(){
+ const j=cur;if(!j||alertBusy)return;
+ if(j.id==='TEST'){nextAlert();return toast('นี่คือการทดสอบ ระบบแจ้งเตือนทำงานปกติ')}
+ alertBusy=true;clearInterval(alertTimer);setAlertButtons(true);
+ try{const ok=await actions.accept(j.id);if(ok){queue=[];nextAlert()}else{jobs=await DB.jobs();if(!pending().some(x=>x.id===j.id))nextAlert()}}
+ finally{alertBusy=false;setAlertButtons(false);if(cur)startAlertClock()}
+}
 };
 document.addEventListener('click',async e=>{
   unlockAudio();const g=e.target.closest('[data-go]');if(g)return go(g.dataset.go);
   const b=e.target.closest('[data-act]');if(!b)return;
   b.disabled=true;
   try{await actions[b.dataset.act](b.dataset.id)}catch(err){toast('เกิดข้อผิดพลาด: '+err.message);if(sh)sh.msg='เกิดข้อผิดพลาด: '+err.message}
+  b.disabled=false;
   if(['sheet','sfset','closeSheet','dismiss'].includes(b.dataset.act))render();else await refresh();
 });
 
 /* ============ แจ้งเตือนงานใหม่ ============ */
-let queue=[],cur=null,alertTimer,ac;
+let queue=[],cur=null,alertTimer,ac,alertDeadline=0,alertBusy=false,alertFocus=null,oldOverflow='',alertLocked=false;
+const ALERT_DURATION=30000;
+/* กำลังใจอัตโนมัติ: สุ่มไม่ซ้ำจนกว่าจะครบทุกประโยค */
+const ISAN_CHEERS=[
+'ไหวบ่อาววว! แอดมินส่งแฮงใจมาให้เด้อ ✨',
+'สู้เด้อ บ้านเฮามันแร้ง! แต่อย่าลืมกินน้ำเด้อ ☀️',
+'งานมาแล้วเด้อ คนเก่งของกระนวน 🧡',
+'มื้อนี้ขอให้หมาน ๆ งานเข้า เงินเข้าเด้อ!',
+'ค่อย ๆ ไปเด้อ ถึงปลอดภัย แอดมินกะดีใจแล้ว',
+'เมื่อยกะพักก่อนเด้อ แฮงใจทางนี้มีให้คือเก่า',
+'อีกจักรอบ กะใกล้ฮอดเป้าแล้ว สู้ ๆ เด้อ!',
+'บ่ต้องฟ้าวหลาย ขี่ปลอดภัยไว้ก่อนเด้อ 🛵',
+'คนทางบ้านถ่าอยู่เด้อ ขี่รถดี ๆ นำ',
+'ขอบใจหลาย ๆ ที่ซ่อยส่งความแซ่บให้บ้านเฮา',
+'แดดสิฮ้อนปานใด๋ แอดมินกะส่งใจไปซ่อยเด้อ',
+'มื้อนี้เจ้าสุดยอดหลาย ฮู้โตบ่! 🌟',
+'งานเด้งแล้วเด้อ พร้อมบ่คนเก่ง!',
+'ขอให้ทางโล่ง ไฟเขียว ลูกค้ายิ้มให้เด้อ',
+'กินข้าวแล้วบ่ อย่ามัวแต่แล่นงานจนลืมเด้อ',
+'น้ำเย็นจักอึก แล้วค่อยไปต่อเด้อ 🧊',
+'แอดมินอยู่ทางนี้ ส่งแฮงใจไปฮอดเจ้าเด้อ',
+'ฝนสิตกกะระวังทางมื่นนำเด้อ เป็นห่วงหลาย',
+'มื้อนี้เฮ็ดดีแล้วเด้อ ภูมิใจในโตเองนำ',
+'ทีละงาน ทีละก้าว เฮาค่อย ๆ ไปนำกันเด้อ',
+'คนขยันคือเจ้า สมควรได้ยิ้มกว้าง ๆ เด้อ 😊',
+'บ่แม่นแค่ส่งของ เจ้ากำลังส่งรอยยิ้มเด้อ',
+'ฮ้อนกะหลบฮ่มก่อนเด้อ งานถัดไปค่อยว่ากัน',
+'งานนี้มีแฮงใจแถมให้เต็มกระเป๋าเลยเด้อ!',
+'ให้มื้อนี้เป็นมื้อดี ๆ ของเจ้าเด้อ 🧡',
+'ไปรับความแซ่บ แล้วส่งฮอดมือเขาเด้อ',
+'ขี่ดี ๆ เด้อ อย่าลืมใส่หมวกกันน็อกนำ',
+'บ่ต้องเก่งทุกมื้อ แค่ดูแลโตเองกะเก่งแล้ว',
+'ขอให้ลูกค้าน่าฮัก ร้านเฮ็ดไว มื้อนี้เด้อ',
+'แฮงใจบ่เคยหมด ส่งให้เจ้าตลอดเด้อ!',
+'เงินกะอยากได้ แต่ความปลอดภัยต้องมาก่อนเด้อ',
+'มื้อนี้ได้เท่าใด๋ กะขอบใจที่ตั้งใจเด้อ',
+'พักหายใจจักหน่อย แล้วค่อยลุยต่อเด้อ',
+'หมาน ๆ เด้อ ขอให้มีแต่เรื่องม่วนใจ',
+'ยิ้มให้โตเองจักเทื่อ เจ้าพยายามหลายแล้ว',
+'ไปดีมาดีเด้อ แอดมินคอยเชียร์อยู่ 🛵',
+'กระนวนบ้านเฮา มีเจ้าคอยส่งกะอุ่นใจหลาย',
+'ร้านพร้อมแล้ว แฮงใจแอดมินกะพร้อมคือกัน!',
+'บ่ไหวกะข้ามได้เด้อ เอาที่เจ้าสะดวกเลย',
+'สู้เด้อคนขยัน แต่อย่าฝืนร่างกายเด้อ',
+'ขอให้รับง่าย ส่งคล่อง ตลอดมื้อนี้เด้อ',
+'มื้อใด๋เมื่อย กะจำไว้ว่าเจ้ายังมีคนเชียร์',
+'งานเด้งติ๊ง ๆ แอดมินส่งใจปิ๊ง ๆ ให้เด้อ ✨',
+'ขอบใจที่เป็นแฮงสำคัญของบ้านเฮาเด้อ',
+'ค่อย ๆ สะสมไปเด้อ ความตั้งใจบ่เสียเปล่า',
+'อย่าลืมยืดแขนยืดขานำเด้อ คนเก่ง',
+'ขอให้ทุกเส้นทางพาเจ้ากลับเฮือนปลอดภัยเด้อ',
+'ใจพร้อม รถพร้อม กะไปได้เด้อ บ่พร้อมกะพักก่อน',
+'แซ่บคัก ๆ กำลังถ่าให้เจ้าไปส่งเด้อ!',
+'มื้อนี้บ่ได้สู้ผู้เดียวเด้อ แอดมินเชียร์อยู่',
+'เก็บแฮงไว้ยิ้มตอนเลิกงานนำเด้อ 😊',
+'ฮักแพงโตเองนำเด้อ ไรเดอร์บ้านเฮา',
+'ถึงช้าจักหน่อยบ่เป็นหยัง เอาปลอดภัยเด้อ',
+'ขอให้มื้อนี้มีเรื่องให้ยิ้มหลายกว่าเรื่องเมื่อย',
+'แอดมินยกนิ้วให้เลยเด้อ ตั้งใจคักหลาย 👍',
+'หิวกะกิน เมื่อยกะพัก แฮงใจบ่หนีไปไสเด้อ',
+'ลุยได้กะลุย บ่ไหวกะพัก เฮาเข้าใจเด้อ',
+'อีกหนึ่งงาน อีกหนึ่งรอยยิ้มของบ้านเฮา 🧡',
+'ขอให้รถดี ทางดี มีแต่คนใจดีเด้อ',
+'พร้อมยามใด๋ค่อยไปเด้อ แอดมินส่งแฮงใจให้คือเก่า'
+];
+let cheerBag=[],lastCheer='';
+function randomCheer(){
+ if(!cheerBag.length){cheerBag=[...ISAN_CHEERS];for(let i=cheerBag.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[cheerBag[i],cheerBag[k]]=[cheerBag[k],cheerBag[i]]}if(cheerBag.at(-1)===lastCheer)[cheerBag[0],cheerBag[cheerBag.length-1]]=[cheerBag.at(-1),cheerBag[0]]}
+ return lastCheer=cheerBag.pop();
+}
+// ภาพวาดสำรองฝังในไฟล์ ใช้เมื่อไม่มีรูปจริงหรือโหลดรูปไม่ได้.
+const SHOP_PLACEHOLDER='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"><rect width="800" height="450" fill="#302c29"/><circle cx="655" cy="90" r="95" fill="#e95f2b" opacity=".14"/><path d="M0 360Q400 290 800 360V450H0" fill="#403630"/><rect x="210" y="130" width="380" height="240" rx="12" fill="#fff0d2"/><rect x="235" y="90" width="330" height="64" rx="12" fill="#e95f2b"/><path d="M200 170H600L570 225H230Z" fill="#ffaf71"/><path d="M240 170H290L280 225H230M340 170H390L385 225H330M440 170H490L495 225H440M540 170H580L600 225H550" fill="#e95f2b"/><rect x="245" y="250" width="175" height="90" rx="6" fill="#52483e"/><rect x="450" y="250" width="100" height="120" rx="6" fill="#8b674d"/><circle cx="530" cy="310" r="5" fill="#ffe1a1"/><path d="M275 300h110M292 280h75" stroke="#ffcf90" stroke-width="8" stroke-linecap="round"/><path d="M175 375h450" stroke="#e95f2b" stroke-width="10" stroke-linecap="round"/></svg>');
+function jobPhoto(j){
+ for(const [value,label] of [[j.shop_image_url,'ภาพหน้าร้าน'],[j.shop_image,'ภาพหน้าร้าน'],[j.product_image_url,'ภาพสินค้า'],[j.product_image,'ภาพสินค้า'],[j.image_url,'ภาพประกอบงาน']]){
+  if(typeof value!=='string'||!value.trim())continue;
+  try{const u=new URL(value,document.baseURI);if(['http:','https:'].includes(u.protocol)||/^data:image\/(png|jpeg|webp|gif);base64,/i.test(value))return {url:u.href,label}}catch(e){}
+ }
+ return {url:SHOP_PLACEHOLDER,label:'ภาพประกอบ · ยังไม่มีรูปจริง'};
+}
 function unlockAudio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}}
 function beep(){if(!prof.sound)return;try{unlockAudio();[880,1175,880,1175].forEach((f,i)=>{const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+i*.22;o.frequency.value=f;o.connect(g);g.connect(ac.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.2);o.start(t);o.stop(t+.21)});navigator.vibrate&&navigator.vibrate([300,120,300])}catch(e){}}
-function detect(){const p=pending();if(!seen){seen=new Set(p.map(j=>j.id));return}p.filter(j=>!seen.has(j.id)).forEach(j=>{seen.add(j.id);if(online)notify(j)})}
-function notify(j){queue.push(j);if(!cur)nextAlert();beep();
-  try{if(document.hidden&&window.Notification&&Notification.permission==='granted')new Notification('งานใหม่ '+baht(j.fee),{body:j.shop+' → '+j.dropoff})}catch(e){}}
-function nextAlert(){
-  clearTimeout(alertTimer);cur=queue.shift()||null;const el=$('#alert');
-  if(!cur){el.innerHTML='';return}
-  const j=cur;
-  el.innerHTML=`<div class="alertcard"><div class="jobhead"><div class="avatar"><svg class="ic"><use href="#i-bell"/></svg></div><div><strong>งานใหม่เข้า</strong><span class="muted">${esc(j.shop)} · ${esc(j.distance_km)} กม.${queue.length?` · รออีก ${queue.length} งาน`:''}</span></div><div class="amount">${baht(j.fee)}</div></div>
-  <div class="timeline"><div class="stop">${esc(j.pickup)}<small>จุดรับของ</small></div><div class="stop">${esc(j.dropoff)}<small>จุดส่งของ</small></div></div>
-  <div class="row"><button class="secondary" data-act="dismiss">ข้าม</button><button class="primary" data-act="takeAlert">รับงานนี้</button></div><div class="alertbar"><i></i></div></div>`;
-  alertTimer=setTimeout(nextAlert,30000);
+function detect(){
+ const p=pending(),ids=new Set(p.map(j=>j.id));
+ queue=queue.filter(j=>j.id==='TEST'||(online&&!active()&&ids.has(j.id)));
+ if(cur&&cur.id!=='TEST'&&!alertBusy&&(!online||active()||!ids.has(cur.id)))nextAlert();
+ if(!seen){seen=ids;return}
+ p.filter(j=>!seen.has(j.id)).forEach(j=>{seen.add(j.id);if(online&&!active())notify(j)});
 }
+function notify(j){
+ if(j.id!=='TEST'&&(!online||active()))return;
+ if(cur?.id===j.id||queue.some(x=>x.id===j.id))return;
+ queue.push(j);if(!cur)nextAlert();beep();
+ const n=$('#alertQueue');if(n)n.textContent=queue.length?'รออีก '+queue.length+' งาน':'งานใหม่สำหรับคุณ';
+ try{if(document.hidden&&window.Notification&&Notification.permission==='granted')new Notification('งานใหม่ '+baht(j.fee),{body:j.shop+' → '+j.dropoff})}catch(e){}
+}
+function lockAlert(on){
+ if(on===alertLocked)return;alertLocked=on;
+ if(on){alertFocus=document.activeElement;oldOverflow=document.body.style.overflow;document.body.style.overflow='hidden'}
+ document.querySelectorAll('.app > :not(#alert)').forEach(el=>{if(on){el.dataset.alertWasInert=el.inert?'1':'0';el.inert=true}else{el.inert=el.dataset.alertWasInert==='1';delete el.dataset.alertWasInert}});
+ if(!on){document.body.style.overflow=oldOverflow;if(alertFocus?.isConnected&&!alertFocus.disabled)alertFocus.focus();else $('#nav button')?.focus()}
+}
+function setAlertButtons(disabled){$('#alert').querySelectorAll('button').forEach(b=>b.disabled=disabled)}
+function startAlertClock(){
+ clearInterval(alertTimer);
+ const tick=()=>{if(!cur||alertBusy)return;const left=Math.max(0,alertDeadline-Date.now());if(!left){nextAlert();return}const n=$('#alertSeconds'),bar=$('#alertProgress');if(n)n.textContent=Math.ceil(left/1000);if(bar)bar.style.width=left/ALERT_DURATION*100+'%'};
+ alertTimer=setInterval(tick,250);tick();
+}
+function nextAlert(){
+ clearInterval(alertTimer);cur=queue.shift()||null;const el=$('#alert');
+ if(!cur){el.innerHTML='';lockAlert(false);return}
+ const j=cur,photo=jobPhoto(j);alertDeadline=Date.now()+ALERT_DURATION;
+ el.innerHTML='<section class="alertcard"><div class="alertscroll">'+
+ '<header class="alerthead"><div class="avatar"><svg class="ic"><use href="#i-bell"/></svg></div><div class="alertheading"><h2 id="alertTitle">งานใหม่เข้าแล้ว!</h2><small id="alertQueue">'+(queue.length?'รออีก '+queue.length+' งาน':'งานใหม่สำหรับคุณ')+'</small></div><div class="alertfee"><small>ค่ารอบ</small><strong>'+baht(j.fee)+'</strong></div></header>'+
+ '<figure class="alertphoto"><img id="alertPhoto" src="'+esc(photo.url)+'" alt="'+esc(photo.label+' — '+j.shop)+'"><span class="photochip" id="alertPhotoLabel">'+esc(photo.label)+'</span><figcaption>'+esc(j.shop)+'</figcaption></figure>'+
+ '<div class="alertbody"><div class="admincheer"><div class="adminav"><svg class="ic"><use href="#i-chat"/></svg></div><div class="adminbubble"><small>แอดมินกระนวน · กำลังใจอัตโนมัติ 🧡</small><p id="alertCheer">'+esc(randomCheer())+'</p></div></div>'+
+ '<div class="timeline"><div class="stop"><small>จุดรับของ · ระยะทาง '+esc(j.distance_km??'–')+' กม.</small>'+esc(j.pickup)+'</div><div class="stop"><small>จุดส่งของ</small>'+esc(j.dropoff)+'</div></div></div>'+
+ '</div><footer class="alertfooter"><div class="alertclock"><span>ตัดสินใจภายใน</span><strong><span id="alertSeconds">30</span> วินาที</strong></div><div class="row"><button class="secondary" data-act="dismiss">ข้ามงานนี้</button><button class="primary" data-act="takeAlert">'+(j.id==='TEST'?'ทดสอบรับงาน':'รับงานนี้')+'</button></div><div class="alertbar" aria-hidden="true"><i id="alertProgress"></i></div><p>จอดรถให้ปลอดภัยก่อนกดรับงานเด้อ</p></footer></section>';
+ const img=$('#alertPhoto');img.onerror=()=>{img.onerror=null;img.src=SHOP_PLACEHOLDER;img.alt='ภาพประกอบร้าน — ยังไม่มีรูปจริง';$('#alertPhotoLabel').textContent='โหลดรูปไม่ได้ · ภาพประกอบ'};
+ lockAlert(true);el.querySelector('[data-act="takeAlert"]').focus();startAlertClock();
+}
+ document.addEventListener('keydown',e=>{
+ if(!cur)return;
+ if(e.key==='Escape'){e.preventDefault();if(!alertBusy)nextAlert();return}
+ if(e.key==='Tab'){const buttons=[...$('#alert').querySelectorAll('button:not(:disabled)')];if(!buttons.length){e.preventDefault();return}const first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
+});
+
 
 /* ============ ลูกค้า / ยกเลิกงาน / ร้องเรียน / ฉุกเฉิน ============ */
 let sh=null,shHTML='';
@@ -467,7 +597,7 @@ async function loadProfile(){try{const r=await DB.getProfile();if(!r)return;Obje
 /* ============ แผนที่และ GPS ============ */
 let map,pin;
 function initMap(){
-  if(map)return;
+  if(map||!window.L)return;
   map=L.map('realMap',{zoomControl:false,attributionControl:false,dragging:!L.Browser.mobile,tap:false}).setView([16.706,103.078],15);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,className:'dark-map-tiles'}).addTo(map);
   pin=L.marker([16.706,103.078],{icon:L.divIcon({className:'',html:'<div style="background:var(--ac);width:24px;height:24px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 12px var(--ac)"></div>',iconSize:[24,24],iconAnchor:[12,12]})}).addTo(map);
@@ -477,14 +607,14 @@ function watchGps(){
   if(!navigator.geolocation){st.textContent='อุปกรณ์ไม่รองรับ GPS';return}
   navigator.geolocation.watchPosition(p=>{
     pos={lat:p.coords.latitude,lng:p.coords.longitude};
-    pin.setLatLng([pos.lat,pos.lng]);map.panTo([pos.lat,pos.lng]);
+    if(pin)pin.setLatLng([pos.lat,pos.lng]);if(map)map.panTo([pos.lat,pos.lng]);
     st.textContent=`พิกัดสด ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
     if(online&&Date.now()-lastPush>15000){lastPush=Date.now();DB.presence(true).catch(()=>{})}
   },()=>{st.textContent='กรุณาเปิดสิทธิ์ GPS';st.style.color='#ff5252'},{enableHighAccuracy:true,timeout:20000});
 }
 
 /* ============ เริ่มทำงาน ============ */
-applyTheme();initMap();watchGps();render();refresh();loadProfile();addEventListener('resize',()=>map.invalidateSize());
+applyTheme();initMap();watchGps();render();refresh();loadProfile();addEventListener('resize',()=>{if(map)map.invalidateSize()});
 setInterval(async()=>{if(!online)return;if(tab!=='settings')return refresh();try{jobs=await DB.jobs();detect()}catch(e){}},5000);
 </script>
 </body>
